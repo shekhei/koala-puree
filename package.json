@@ -1,0 +1,21 @@
+{
+  "name": "koala-puree",
+  "version": "0.0.1",
+  "description": "a koa(koala) project meshup",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/eskygo/koala-puree"
+  },
+  "keywords": [
+    "koala",
+    "koa",
+    "project",
+    "meshup"
+  ],
+  "author": "Wong Shek Hei Felix",
+  "license": "ISC"
+}
