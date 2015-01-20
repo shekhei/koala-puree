@@ -3,11 +3,12 @@ var readYaml = require('read-yaml'), extend = require('extend');
 var socketio = require('socket.io');
 var mdns = require('mdns');
 var debug = require('debug')('koala-puree')
-require('pkginfo')(module);
-var pkginfo = module.exports;
 
-var Puree = function(config){
+var Puree = function(mod, config){
+	require('pkginfo')(mod);
+	var pkginfo = mod.exports;
 	if (!(this instanceof Puree)) return new Puree;
+	debug(`pwd is ${require('path').resolve('.')}`)
 	config = config || "./config/server.yml";
 
 	var app = this._app = require('koala')();
@@ -45,12 +46,43 @@ var puree = Puree.prototype = {
 	start: function(cb) {
 		var server = this._server = this._app.listen(this._config.port, "::"), self = this;
 		server.once('listening', function(){
-			var ad = new mdns.Advertisement(mdns.tcp(self._config.name), self._config.port, {
+			var adSettings = {
+				name: self._config.name,
 				txtRecord: {
+					name: self._config.name, // cant put into subtype, it is too long
 					version: self._config.version
+				},
+				flags: mdns.kDNSServiceFlagsForceMulticast
+			};
+			// TODO: consider if ad interface should be an array, else not, loopback would not work
+			if ( self._config.mdns && self._config.mdns.ad ) {
+				if (undefined !== self._config.mdns.ad.interface) {
+					if ( self._config.mdns.ad.interface === "lo") {
+						adSettings.networkInterface = mdns.loopbackInterface();
+						adSettings.host = "localhost";
+					} else {
+						adSettings.networkInterface = self._config.mdns.ad.interface;
+					}
 				}
-			});
-			ad.start();
+				if (self._config.mdns.ad.domain) { 
+					adSettings.domain = self._config.mdns.ad.domain;
+				}
+			}
+			function handleError(e){
+				console.log(e,e.stack);
+			}
+			try {
+				debug(`beginning advertisement ${adSettings}`);
+				var ad = new mdns.Advertisement(mdns.makeServiceType({name:'koala-puree', protocol:'tcp'}), self._config.port, adSettings, function(err, service){
+					debug(`service registered: ${err} ${service.name}`);
+					cb(undefined, self);
+				});
+				ad.on('error', handleError);
+				debug(`starting advertisement ${adSettings}`);
+				ad.start();
+			} catch(e) {
+				handleError(e);
+			}
 		})
 		require('./lib/sio')(this, server);
 		return server;
@@ -67,5 +99,8 @@ puree.DEFAULTCONFIG = {
 	port: 3000,
 	host: "0.0.0.0"
 }
-
+Puree.Spices = {
+	Service: require('./lib/service').Service,
+	Browser: require('./lib/service').Browser
+}
 exports = module.exports = Puree;

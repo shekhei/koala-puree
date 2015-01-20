@@ -1,4 +1,11 @@
 development:
   port: 5000
+  mdns:
+    ad:
+      interface: lo
 test:
   port: 5000
+  mdns:
+    ad:
+      interface: lo
+    domain: .local

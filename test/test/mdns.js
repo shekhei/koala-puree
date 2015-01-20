@@ -1,7 +1,8 @@
+"use strict";
 var chai = require("chai"),
 	expect = chai.expect,
 	chaiHttp = require("chai-http"),
-	KoalaPuree = require('../index'),
+	TestApp = require('../index'),
 	sioClient = require("socket.io-client"),
 	mdns = require('mdns'),
 	pkginfo;
@@ -12,26 +13,16 @@ pkginfo = module.exports;
 chai.use(chaiHttp);
 
 describe('mDNS', function(){
-	var puree, sio, socket, mDnsBrowser;
+	var puree = TestApp, sio, socket, mDnsBrowser;
 	before(function(done) {
 		mDnsBrowser = new mdns.Browser(mdns.tcp('koala-puree'), {resolverSequence:[
 			mdns.rst.DNSServiceResolve(),
-			mdns.rst.DNSServiceGetAddrInfo({families:[4,6]})
+			// 'DNSServiceGetAddrInfo' in mdns.dns_sd ? mdns.rst.DNSServiceGetAddrInfo() : mdns.rst.getaddrinfo()
+			mdns.rst.DNSServiceGetAddrInfo({families:[4]})
 		]})
-		puree = new KoalaPuree(require('path').resolve('./test/config/server.yml'));
-		puree.start().on('listening', function(err){
+		puree.start(function(err, app){
 			if ( err ) { console.log(err); return done(err); }
-			done();
-		});
-		mDnsBrowser.start();
-		puree.get('/test', function*(next){
-			this.body="get";
-		});
-		puree.post('/test', function*(next){
-			this.body="post";
-		});
-		puree.get('/test/:name', function*(next){
-			this.body=this.params.name;
+			done();			
 		});
 	})
 	after(function(done){
@@ -43,27 +34,35 @@ describe('mDNS', function(){
 	})
 	describe('discover', function(){
 		it("should be able to discover", function(done){
-			this.timeout(500000);
+			this.timeout(2000);
 			mDnsBrowser.on('serviceUp', function(service){
+				if ( service.name !== "koala-puree-test") { return; }
 				expect(service).to.have.property('txtRecord');
 				expect(service.txtRecord).to.have.property('version');
+				expect(service.txtRecord).to.have.property('name');
 				expect(service.txtRecord.version).eqls(pkginfo.version);
+				expect(service.txtRecord.name).eqls(pkginfo.name);
 				expect(service).to.have.property('type');
 				expect(service.type).to.have.property('name');
-				expect(service.type.name).eqls(pkginfo.name);
+				expect(service.type.name).eqls("koala-puree");
+				expect(service.name).eqls(pkginfo.name);
+
 				// mDnsBrowser.resolve(service, function(){
-					sio = sioClient("ws://"+service.host+":"+service.port);
+				var connectHost = service.addresses ? service.addresses[0] : service.host;
+					sio = sioClient(`ws://${connectHost}:${service.port}`);
+					console.log(`ws://${connectHost}:${service.port}`)
 					sio.once('connect', function(sock){
 						done();
 					}).on('connect_error', function(err){
 						// done(err);
-					})					
+					})
 				// });
 				// require('dns').reverse(service.addresses[0], function(err, domains){
 					// console.log(err, domains);
 
 				// });
 			});
+			mDnsBrowser.start();
 		})
 	})
 });

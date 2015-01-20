@@ -1,16 +1,15 @@
 var chai = require("chai"),
 	expect = chai.expect,
 	chaiHttp = require("chai-http"),
-	KoalaPuree = require('../index'),
+	TestApp = require('../index'),
 	sioClient = require("socket.io-client");
 
 chai.use(chaiHttp);
 
 describe('Application', function(){
-	var puree, sio, socket;
+	var puree = TestApp, sio, socket;
 	before(function(done) {
-		puree = new KoalaPuree(require('path').resolve('./test/config/server.yml'));
-		puree.start().on('listening', function(err){
+		puree.start(function(err,app){
 
 			if ( err ) { console.log(err); return done(err); }
 			sio = sioClient('http://localhost:5000', {transports:['websocket']});
@@ -18,15 +17,6 @@ describe('Application', function(){
 				done();
 			})
 			
-		});
-		puree.get('/test', function*(next){
-			this.body="get";
-		});
-		puree.post('/test', function*(next){
-			this.body="post";
-		});
-		puree.get('/test/:name', function*(next){
-			this.body=this.params.name;
 		});
 	})
 	after(function(done){
