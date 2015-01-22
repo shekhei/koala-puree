@@ -20,17 +20,18 @@ describe('mDNS', function(){
 			// 'DNSServiceGetAddrInfo' in mdns.dns_sd ? mdns.rst.DNSServiceGetAddrInfo() : mdns.rst.getaddrinfo()
 			mdns.rst.DNSServiceGetAddrInfo({families:[4]})
 		]})
-		puree.start(function(err, app){
+		puree.start().then(function(app){
+			done();
+		}, function(err){
 			if ( err ) { console.log(err); return done(err); }
-			done();			
 		});
 	})
 	after(function(done){
-		puree._server.once('close', function(err){
-			console.log('completed close');
+		puree.close().then(function(){
 			done();
+		},function(err){
+			done(err);
 		});
-		puree.close();
 	})
 	describe('discover', function(){
 		it("should be able to discover", function(done){

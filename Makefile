@@ -1,3 +1,5 @@
+all: test
 test:
-	cd test
-	DEBUG=* NODE_ENV=test mocha test
+	$(MAKE) -C ./test/ all
+
+.PHONY: test

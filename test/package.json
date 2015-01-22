@@ -7,5 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "sails-fdbsql": "^0.10.0",
+    "waterline": "^0.10.16"
+  },
+  "devDependencies": {
+    "mocha": "^2.1.0"
+  }
 }

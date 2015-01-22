@@ -19,30 +19,33 @@ chai.use(chaiHttp);
 describe('Puree Infra', function(){
 	var puree = TestApp, sio, socket, browser, service;
 	before(function(done) {
-		puree.start(function(err,app){
-			if ( err ) { console.log(err); return done(err); }
-			service = new Service('koala-puree', '0.0.1');
+		puree.start().then(function(){
+			service = new Service('koala-puree-test', '0.0.1');
 			done();
+		}, function(err) {
+			return done(err);
 		});
 	})
 	after(function(done){
-		puree._server.once('close', function(err){
-			console.log('completed close');
+		this.timeout(20000);
+		puree.close().then(function(){
 			done();
+		},function(err){
+			done(err);
 		});
-		puree.close();
 	})
 	describe("browser should use mDns cache", function(){
 
 	});
 	describe('making service calls', function(){
 		it("should be able call /test", function(done){
-			this.timeout(2000);
-			var fn = require('co').wrap(service.get);
-			fn.call(service, '/test').then(function(res){
-				expect(res.body).to.be('get');
+			this.timeout(20000);
+			service.get('/test').then(function(res){
+
+				expect(res.status).eql(200);
+				expect(res.body).eql('get');
 				done();
-			})
+			});
 		})
 	})
 	describe("killing service and restarting should reconnect", function(){

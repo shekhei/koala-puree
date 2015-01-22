@@ -9,22 +9,30 @@ chai.use(chaiHttp);
 describe('Application', function(){
 	var puree = TestApp, sio, socket;
 	before(function(done) {
-		puree.start(function(err,app){
-
-			if ( err ) { console.log(err); return done(err); }
+		// this.timeout(50000);
+		puree.start().then(function(){
 			sio = sioClient('http://localhost:5000', {transports:['websocket']});
+			// anotherSIO = sioClient('ws://218.202.236.54:8080/push/T820119/T820119');
+			// console.log("trying to connect to that");
+			// anotherSIO.once('connect', function(sock){
+				// console.log("sock connected to ");
+			// })
+			// anotherSIO.once('error', function(sock){
+				// console.log("sock failed to ");
+			// })
 			sio.once('connect', function(sock){
 				done();
 			})
-			
+		}, function(err){
+			done(err);			
 		});
 	})
 	after(function(done){
-		sio.disconnect();
-		puree._server.once('close', function(){
+		puree.close().then(function(){
 			done();
+		},function(err){
+			done(err);
 		});
-		puree.close();
 	})
 	describe('routes', function(){
 		it('should have a get(/test)', function(done){
@@ -81,3 +89,4 @@ describe('Application', function(){
 		});
 	})
 });
+
