@@ -9,6 +9,7 @@ chai.use(chaiHttp);
 describe('Application', function(){
 	var puree = TestApp, sio, socket;
 	before(function(done) {
+		this.timeout(5000);
 		// this.timeout(50000);
 		puree.start().then(function(){
 			sio = sioClient('http://localhost:5000', {transports:['websocket']});

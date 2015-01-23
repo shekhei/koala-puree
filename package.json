@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "a koa(koala) project meshup",
   "main": "index.js",
+  "bin": "./bin/koala-puree.js",
   "scripts": {
     "test": "mocha"
   },

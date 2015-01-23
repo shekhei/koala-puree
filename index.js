@@ -88,13 +88,13 @@ var puree = Puree.prototype = {
 				}
 				try {
 					debug(`beginning advertisement ${adSettings}`);
-					var ad = new mdns.Advertisement(mdns.makeServiceType({name:'koala-puree', protocol:'tcp'}), self._config.port, adSettings, function(err, service){
+					this._ad = new mdns.Advertisement(mdns.makeServiceType({name:'koala-puree', protocol:'tcp'}), self._config.port, adSettings, function(err, service){
 						debug(`service registered: ${err} ${service.name}`);
 						resolve(self);
 					});
-					ad.on('error', handleError);
+					this._ad.on('error', handleError);
 					debug(`starting advertisement ${adSettings}`);
-					ad.start();
+					this._ad.start();
 				} catch(e) {
 					handleError(e);
 				}
@@ -120,6 +120,7 @@ var puree = Puree.prototype = {
 			debug(`closing server...`);
 
 			self._server.close(function(err){
+				this._ad.stop();
 				debug(`server has closed, beginning of the end`);
 				if ( err ) { debug(`server temination failed with ${err}`); return reject(err); }
 				debug(`server closed`);

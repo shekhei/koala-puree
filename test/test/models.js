@@ -14,6 +14,7 @@ pkginfo = module.exports;
 describe('Puree Models', function(){
 	var puree = TestApp, app, sio, socket, browser, service;
 	before(function(done) {
+		this.timeout(5000);
 		puree.start().then(function(tapp){
 			app = tapp;
 			tapp.models.user.destroy().then(function(){

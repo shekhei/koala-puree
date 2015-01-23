@@ -15,6 +15,7 @@ chai.use(chaiHttp);
 describe('mDNS', function(){
 	var puree = TestApp, sio, socket, mDnsBrowser;
 	before(function(done) {
+		this.timeout(5000);
 		mDnsBrowser = new mdns.Browser(mdns.tcp('koala-puree'), {resolverSequence:[
 			mdns.rst.DNSServiceResolve(),
 			// 'DNSServiceGetAddrInfo' in mdns.dns_sd ? mdns.rst.DNSServiceGetAddrInfo() : mdns.rst.getaddrinfo()
@@ -36,8 +37,12 @@ describe('mDNS', function(){
 	describe('discover', function(){
 		it("should be able to discover", function(done){
 			this.timeout(2000);
+			var completed = false;
 			mDnsBrowser.on('serviceUp', function(service){
 				if ( service.name !== "koala-puree-test") { return; }
+				if ( completed ) { return; }
+				completed = true;
+
 				expect(service).to.have.property('txtRecord');
 				expect(service.txtRecord).to.have.property('version');
 				expect(service.txtRecord).to.have.property('name');
@@ -50,6 +55,7 @@ describe('mDNS', function(){
 
 				// mDnsBrowser.resolve(service, function(){
 				var connectHost = service.addresses ? service.addresses[0] : service.host;
+				if ( service.replyDomain === "local.") { connectHost = "127.0.0.1"}
 					sio = sioClient(`ws://${connectHost}:${service.port}`);
 					console.log(`ws://${connectHost}:${service.port}`)
 					sio.once('connect', function(sock){
@@ -57,6 +63,7 @@ describe('mDNS', function(){
 					}).on('connect_error', function(err){
 						// done(err);
 					})
+					mDnsBrowser.stop();
 				// });
 				// require('dns').reverse(service.addresses[0], function(err, domains){
 					// console.log(err, domains);

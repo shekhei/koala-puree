@@ -19,6 +19,7 @@ chai.use(chaiHttp);
 describe('Puree Infra', function(){
 	var puree = TestApp, sio, socket, browser, service;
 	before(function(done) {
+		this.timeout(5000);
 		puree.start().then(function(){
 			service = new Service('koala-puree-test', '0.0.1');
 			done();
