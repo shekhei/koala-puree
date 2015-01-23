@@ -27,7 +27,7 @@ describe('Puree Infra', function(){
 		});
 	})
 	after(function(done){
-		this.timeout(20000);
+		this.timeout(5000);
 		puree.close().then(function(){
 			done();
 		},function(err){
@@ -39,7 +39,7 @@ describe('Puree Infra', function(){
 	});
 	describe('making service calls', function(){
 		it("should be able call /test", function(done){
-			this.timeout(20000);
+			this.timeout(5000);
 			service.get('/test').then(function(res){
 
 				expect(res.status).eql(200);
