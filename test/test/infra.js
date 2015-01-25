@@ -40,9 +40,8 @@ describe('Puree Infra', function(){
 	});
 	describe('making service calls', function(){
 		it("should be able call /test", function(done){
-			this.timeout(5000);
+			this.timeout(500000000);
 			service.get('/test').then(function(res){
-
 				expect(res.status).eql(200);
 				expect(res.body).eql('get');
 				done();

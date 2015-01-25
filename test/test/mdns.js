@@ -36,7 +36,7 @@ describe('mDNS', function(){
 	})
 	describe('discover', function(){
 		it("should be able to discover", function(done){
-			this.timeout(2000);
+			this.timeout(5000);
 			var completed = false;
 			mDnsBrowser.on('serviceUp', function(service){
 				if ( service.name !== "koala-puree-test") { return; }
@@ -56,14 +56,20 @@ describe('mDNS', function(){
 				// mDnsBrowser.resolve(service, function(){
 				var connectHost = service.addresses ? service.addresses[0] : service.host;
 				if ( service.replyDomain === "local.") { connectHost = "127.0.0.1"}
-					sio = sioClient(`ws://${connectHost}:${service.port}`);
-					console.log(`ws://${connectHost}:${service.port}`)
+				sio = sioClient(`ws://${connectHost}:${service.port}`);
+				console.log(`ws://${connectHost}:${service.port}`)
+				if ( sio.io.readyState === "open" ) {
+					done();
+				} else {
 					sio.once('connect', function(sock){
 						done();
+					}).once('reconnect', function(sock){
+						done();
 					}).on('connect_error', function(err){
-						// done(err);
+						done(err);
 					})
-					mDnsBrowser.stop();
+				}
+				mDnsBrowser.stop();
 				// });
 				// require('dns').reverse(service.addresses[0], function(err, domains){
 					// console.log(err, domains);

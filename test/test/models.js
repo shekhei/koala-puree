@@ -17,12 +17,31 @@ describe('Puree Models', function(){
 		this.timeout(5000);
 		puree.start().then(function(tapp){
 			app = tapp;
-			tapp.models.user.destroy().then(function(){
-				tapp.models.useralias.destroy().then(function(){
-					done();	
+			console.log('destroying all models');
+			Promise.all([
+				new Promise(function(resolve, reject){
+					tapp.models.user.count().then(function(count){
+						if ( count > 0 ) {
+							tapp.models.user.destroy().then(resolve).catch(reject);
+						}else {
+							resolve();
+						}
+					})
+				}),
+				new Promise(function(resolve, reject){
+					tapp.models.useralias.count().then(function(count){
+						if ( count > 0 ) {
+							tapp.models.useralias.destroy().then(resolve).catch(reject);
+						}else {
+							resolve();
+						}
+					})
 				})
-				
-			})
+			]).then(function(){
+				done();
+			}, function(err){
+				done(err);
+			});
 			// service = new Service('koala-puree-test', '0.0.1');
 		},function(err){
 			done(err);
