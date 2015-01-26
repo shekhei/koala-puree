@@ -38,7 +38,7 @@
     "npm": "^2.1.18",
     "pkginfo": "git+https://github.com/shekhei/node-pkginfo.git",
     "read-yaml": "^1.0.0",
-    "sails-fdbsql": "^0.10.0",
+    "sails-fdbsql": "git+https://github.com/eskygo/sql-layer-adapter-sails.git",
     "semver": "^4.2.0",
     "socket.io": "^1.2.1",
     "watch": "^0.13.0",
