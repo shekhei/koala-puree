@@ -12,7 +12,7 @@ require('pkginfo')(module);
 pkginfo = module.exports;
 
 describe('Puree Models', function(){
-	var puree = TestApp, app, sio, socket, browser, service;
+	var puree = new TestApp(), app, sio, socket, browser, service;
 	before(function(done) {
 		this.timeout(5000);
 		puree.start().then(function(tapp){

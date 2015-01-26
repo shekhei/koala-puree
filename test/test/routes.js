@@ -7,7 +7,7 @@ var chai = require("chai"),
 chai.use(chaiHttp);
 
 describe('Application', function(){
-	var puree = TestApp, sio, socket;
+	var puree = new TestApp(), sio, socket;
 	before(function(done) {
 		this.timeout(5000);
 		// this.timeout(50000);

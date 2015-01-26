@@ -6,8 +6,9 @@ var debug = require('debug')('koala-puree')
 var Emitter = require('events').EventEmitter;
 
 var Puree = function(mod, config){
-	require('pkginfo')(mod);
-	var pkginfo = mod.exports;
+	
+	var pkginfo = require('pkginfo')(mod);
+
 	if (!(this instanceof Puree)) return new Puree;
 	debug(`pwd is ${require('path').resolve('.')}`)
 	config = config || "./config/server.yml";
@@ -19,10 +20,11 @@ var Puree = function(mod, config){
 	var router = require('koa-trie-router')(app);
 	router._oldmatch = router.match;
 	router.match = function(str){
-		console.log(str);
+		// console.log(str);
 		return str.indexOf(self._ns)===0 ? router._oldmatch.call(router,str.substring(self._ns.length)) : false;
 	}
 	app.use(router);
+	app.puree = this;
 	this._config = extend(puree.DEFAULTCONFIG, readYaml.sync(config)[app.env]);
 	this._config.name = pkginfo.name
 	this._config.version = pkginfo.version;

@@ -17,7 +17,7 @@ pkginfo = module.exports;
 chai.use(chaiHttp);
 
 describe('Puree Infra', function(){
-	var puree = TestApp, sio, socket, browser, service;
+	var puree = new TestApp(), sio, socket, browser, service;
 	before(function(done) {
 		this.timeout(5000);
 		puree.start().then(function(){

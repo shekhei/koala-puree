@@ -13,7 +13,7 @@ pkginfo = module.exports;
 chai.use(chaiHttp);
 
 describe('mDNS', function(){
-	var puree = TestApp, sio, socket, mDnsBrowser;
+	var puree = new TestApp(), sio, socket, mDnsBrowser;
 	before(function(done) {
 		this.timeout(5000);
 		mDnsBrowser = new mdns.Browser(mdns.tcp('koala-puree'), {resolverSequence:[
