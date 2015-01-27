@@ -10,7 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "sails-fdbsql": "^0.10.0",
-    "waterline": "^0.10.16"
+    "waterline": "^0.10.16",
+    "koala-puree": "*"
   },
   "devDependencies": {
     "mocha": "^2.1.0"

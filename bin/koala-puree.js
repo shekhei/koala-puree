@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --harmony
 var program = require('commander');
 
 program.version('0.0.1')
@@ -8,3 +8,4 @@ program.version('0.0.1')
 		require(require('path').resolve(process.cwd()+'/index.js')).start();
 	})
 program.parse(process.argv);
+

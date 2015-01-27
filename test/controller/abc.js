@@ -1,12 +1,13 @@
-exports = module.exports = function(app){
+exports = module.exports = function(router){
 
-	app.get('/test', function*(next){
-		this.body="get";
+	router.get('/test', function*(next){
+		var user = yield this.models.user.find();
+		this.body = "get";
 	});
-	app.post('/test', function*(next){
+	router.post('/test', function*(next){
 		this.body="post";
 	});
-	app.get('/test/:name', function*(next){
+	router.get('/test/:name', function*(next){
 		this.body=this.params.name;
 	});
 }
