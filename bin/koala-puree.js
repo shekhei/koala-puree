@@ -5,7 +5,13 @@ program.version('0.0.1')
 	.command('start')
 	.description('starts a simple server based on your config/server.yml')
 	.action(function(){
-		require(require('path').resolve(process.cwd()+'/index.js')).start();
+		// console.log("action is starting");
+		// console.log(process.cwd());
+		var path = require('path').resolve(process.cwd()+'/index.js');
+		// console.log(path);
+		var TestApp = require(path);
+		var App = new TestApp();
+		App.start();
 	})
 program.parse(process.argv);
 

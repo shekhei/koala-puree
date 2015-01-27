@@ -10,7 +10,7 @@ class Puree extends Emitter {
 	constructor(mod, config) {
 		var pkginfo = require('pkginfo')(mod);
 
-		if (!(this instanceof Puree)) return new Puree;
+		if (!(this instanceof Puree)) return new Puree(mod, config);
 		debug(`pwd is ${require('path').resolve('.')}`)
 		config = config || "./config/server.yml";
 
