@@ -31,7 +31,7 @@
     "koa-socket": "^0.3.0",
     "koa-trie-router": "^1.0.10",
     "koala": "^0.9.1",
-    "mdns": "git+https://github.com/eskygo/node-mdns.git",
+    "mdns": "git+https://github.com/eskygo/node_mdns.git",
     "methods": "^1.1.1",
     "mock-req": "^0.1.0",
     "mock-res": "^0.2.1",
