@@ -59,7 +59,9 @@ describe('mDNS', function(){
 				sio = sioClient(`ws://${connectHost}:${service.port}`);
 				console.log(`ws://${connectHost}:${service.port}`)
 				if ( sio.io.readyState === "open" ) {
+					mDnsBrowser.stop();
 					done();
+					return;
 				} else {
 					sio.once('connect', function(sock){
 						done();

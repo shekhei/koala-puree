@@ -42,6 +42,7 @@
     "sails-fdbsql": "git+https://github.com/eskygo/sql-layer-adapter-sails.git",
     "semver": "^4.2.0",
     "socket.io": "^1.2.1",
+    "socket.io-client": "^1.3.2",
     "watch": "^0.13.0",
     "waterline": "^0.10.16"
   },
