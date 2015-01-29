@@ -33,10 +33,12 @@ class Puree extends Emitter {
 		this._config = extend(Puree.DEFAULTCONFIG, readYaml.sync(config)[app.env]);
 		this._config.name = pkginfo.name
 		this._config.version = pkginfo.version;
+		this._pkginfo = pkginfo;
 		this.use(require('./lib/models.js'))
 		this.use(require('./lib/controllers.js'));
 		this.use(require('./lib/sio.js'));
 		this.use(require('./lib/mdns.js'));
+		this.use(require('./lib/service.js').middleware);
 	}
 	get app() { return this._app; }
 	get sio() { return this._sio; }

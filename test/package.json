@@ -13,6 +13,9 @@
     "waterline": "^0.10.16",
     "koala-puree": "*"
   },
+  "services": {
+    "koala-puree-test": "0.0.1"
+  },
   "devDependencies": {
     "mocha": "^2.1.0"
   }
