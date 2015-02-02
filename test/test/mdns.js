@@ -61,14 +61,18 @@ describe('mDNS', function(){
 				if ( sio.io.readyState === "open" ) {
 					mDnsBrowser.stop();
 					done();
+					done = undefined;
 					return;
 				} else {
 					sio.once('connect', function(sock){
 						done();
+						done = undefined;
 					}).once('reconnect', function(sock){
 						done();
+						done = undefined;
 					}).on('connect_error', function(err){
 						done(err);
+						done = undefined;
 					})
 				}
 				mDnsBrowser.stop();
