@@ -16,7 +16,7 @@ class Puree extends Emitter {
 
 		var app = this._app = require('koala')();
 		//modify koa-trie-router to allow namespace stripping
-		app.use(require('koa-views')('./views', {
+		app.use(require('koa-views')(require('path').resolve('./views'), {
 		  map: {
 		    dust: 'dust'
 		  }
