@@ -20,11 +20,14 @@ class Puree extends Emitter {
 			}
 		});
 		app.use(function*(next){
-			debug("serving static?")
+			debug("static route")
 			if ( this.request.path ) {
-				debug("yes it has a path");
-				if (this.request.path.startsWith(self._ns+"/static")) {
-					debug("yes it begins iwth _ns+/static");
+				var path = "/static"
+				if ( self._ns !== "/" ) {
+					path = self._ns+path;
+				}
+				if (this.request.path.startsWith(path)) {
+					debug("serving file");
 					yield* this.fileServer.send(this.request.path.substr((self._ns+"/static").length));
 					return; 
 				}
