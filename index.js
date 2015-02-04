@@ -14,7 +14,20 @@ class Puree extends Emitter {
 		debug(`pwd is ${require('path').resolve('.')}`)
 		config = config || "./config/server.yml";
 
-		var app = this._app = require('koala')();
+		var app = this._app = require('koala')({
+			fileServer: {
+				root: "./public"
+			}
+		});
+		app.use(function*(next){
+			if ( this.req.path ) {
+				if (this.req.path.startsWith(self._ns+"/static")) {
+					yield* this.fileServer.send(this.req.path.substr((self._ns+"/static").length));
+					return; 
+				}
+			}
+			yield* next;
+		})
 		//modify koa-trie-router to allow namespace stripping
 		app.use(require('koa-views')(require('path').resolve('./views'), {
 		  map: {
@@ -34,6 +47,7 @@ class Puree extends Emitter {
 			yield next;
 		});
 		app.use(router);
+
 		app.puree = this;
 		this._config = extend(Puree.DEFAULTCONFIG, readYaml.sync(config)[app.env]);
 		this._config.name = pkginfo.name
