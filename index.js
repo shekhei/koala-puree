@@ -23,7 +23,7 @@ class Puree extends Emitter {
 			debug("static route")
 			if ( this.request.path ) {
 				var path = "/static"
-				if ( self._ns !== "/" ) {
+				if ( self._ns && self._ns !== "/" ) {
 					path = self._ns+path;
 				}
 				if (this.request.path.startsWith(path)) {
@@ -65,6 +65,7 @@ class Puree extends Emitter {
 		this.use(require('./lib/sio.js'));
 		this.use(require('./lib/mdns.js'));
 		this.use(require('./lib/service.js').middleware);
+		this._ns = "/";
 	}
 	get app() { return this._app; }
 	get sio() { return this._sio; }
