@@ -34,9 +34,6 @@ describe('Puree Infra', function(){
 			done(err);
 		});
 	})
-	describe("browser should use mDns cache", function(){
-
-	});
 	describe('making service calls', function(){
 		it("should be able call /test", function(done){
 			this.timeout(500000000);
@@ -46,8 +43,5 @@ describe('Puree Infra', function(){
 				done();
 			});
 		})
-	})
-	describe("killing service and restarting should reconnect", function(){
-
 	})
 });
