@@ -2,6 +2,7 @@
 var readYaml = require('read-yaml'), extend = require('extend');
 
 var socketio = require('socket.io');
+var codust = require('co-dust');
 var mdns = require('mdns');
 var debug = require('debug')('koala-puree')
 var Emitter = require('events').EventEmitter;
@@ -43,14 +44,15 @@ class Puree extends Emitter {
 			}
 			yield* next;
 		})
-		var dust = require('dustjs-helpers');
+		var dust = new codust({base: require('path').resolve('./app/views')});
 		this._dust = dust;
 		//modify koa-trie-router to allow namespace stripping
-		app.use(require('koa-views')(require('path').resolve('./app/views'), {
-		  map: {
-		    dust: this._dust
-		  }
-		}));
+		app.use(function*(next){
+			this.render = function*(path, context){
+				yield dust.render(path, context);
+			}
+			yield* next;
+		});
 		app.use(require('koa-trie-router')(app));
 		var self = this;
 		var router = require('koa-trie-router')(app);
