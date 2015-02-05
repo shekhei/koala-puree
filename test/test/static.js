@@ -13,7 +13,7 @@ require('pkginfo')(module);
 pkginfo = module.exports;
 
 describe('Puree Static From Public folder', function(){
-	var puree = new TestApp(), app, sio, socket, browser, service;
+	var puree = new TestApp(), app, sio, socket, browser;
 	before(function(done) {
 		this.timeout(5000);
 		puree.start().then(function(tapp){

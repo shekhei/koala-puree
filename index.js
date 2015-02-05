@@ -39,14 +39,16 @@ class Puree extends Emitter {
 			debug("jwt xsrf generation")
 			// jwt based xsrf token
 			if ( "GET HEAD".split(" ").indexOf(this.request.method) >= 0 ) {
-
+				
 			}
 			yield* next;
 		})
+		var dust = require('dustjs-helpers');
+		self._dust = dust;
 		//modify koa-trie-router to allow namespace stripping
 		app.use(require('koa-views')(require('path').resolve('./app/views'), {
 		  map: {
-		    dust: 'dust'
+		    dust: self._dust;
 		  }
 		}));
 		app.use(require('koa-trie-router')(app));
