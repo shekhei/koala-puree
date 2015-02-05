@@ -29,36 +29,39 @@ class Puree extends Emitter {
 				}
 				if (this.request.path.startsWith(path)) {
 					debug("serving file");
-					yield* this.fileServer.send(this.request.path.substr((self._ns+"/static").length));
+					yield this.fileServer.send(this.request.path.substr((self._ns+"/static").length));
 					return; 
 				}
 			}
 			debug("path doesnt match");
-			yield* next;
+			yield next;
 		})
 		app.use(function*(next){
 			debug("jwt xsrf generation")
 			// jwt based xsrf token
+
 			if ( "GET HEAD".split(" ").indexOf(this.request.method) >= 0 ) {
 				
 			}
-			yield* next;
+			yield next;
 		})
 		var dust = new codust({base: require('path').resolve('./app/views')});
 		this._dust = dust;
 		//modify koa-trie-router to allow namespace stripping
 		app.use(function*(next){
+			var self = this;
+			debug('co-dust middleware');
 			this.render = function*(path, context){
-				yield dust.render(path, context);
+				self.body = yield dust.render(path, context);
+
 			}
-			yield* next;
+			yield next;
 		});
 		app.use(require('koa-trie-router')(app));
 		var self = this;
 		var router = require('koa-trie-router')(app);
 		router._oldmatch = router.match;
 		router.match = function(str){
-			// console.log(str);
 			return str.indexOf(self._ns)===0 ? router._oldmatch.call(router,str.substring(self._ns.length)) : false;
 		}
 		app.use(function*(next){
