@@ -48,7 +48,7 @@ class Puree extends Emitter {
 		//modify koa-trie-router to allow namespace stripping
 		app.use(require('koa-views')(require('path').resolve('./app/views'), {
 		  map: {
-		    dust: self._dust;
+		    dust: self._dust
 		  }
 		}));
 		app.use(require('koa-trie-router')(app));
