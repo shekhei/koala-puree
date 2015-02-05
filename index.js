@@ -44,11 +44,11 @@ class Puree extends Emitter {
 			yield* next;
 		})
 		var dust = require('dustjs-helpers');
-		self._dust = dust;
+		this._dust = dust;
 		//modify koa-trie-router to allow namespace stripping
 		app.use(require('koa-views')(require('path').resolve('./app/views'), {
 		  map: {
-		    dust: self._dust
+		    dust: this._dust
 		  }
 		}));
 		app.use(require('koa-trie-router')(app));
