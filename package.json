@@ -21,6 +21,7 @@
   "license": "ISC",
   "dependencies": {
     "co": "^4.1.0",
+    "co-dust": "0.0.1",
     "commander": "2",
     "debug": "^2.1.1",
     "debug-levels": "^0.2.0",
