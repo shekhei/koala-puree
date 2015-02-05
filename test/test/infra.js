@@ -36,7 +36,17 @@ describe('Puree Infra', function(){
 	})
 	describe('making service calls', function(){
 		it("should be able call /test", function(done){
-			this.timeout(500000000);
+			this.timeout(2000);
+			puree.services('koala-puree-test').get('/test').then(function(res){
+				expect(res.status).eql(200);
+				expect(res.body).eql('get');
+				done();
+			});
+		})
+	})
+	describe('making service calls twice using same service', function(){
+		it("should be able call /test", function(done){
+			this.timeout(2000);
 			puree.services('koala-puree-test').get('/test').then(function(res){
 				expect(res.status).eql(200);
 				expect(res.body).eql('get');

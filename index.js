@@ -35,6 +35,14 @@ class Puree extends Emitter {
 			debug("path doesnt match");
 			yield* next;
 		})
+		app.use(function*(next){
+			debug("jwt xsrf generation")
+			// jwt based xsrf token
+			if ( "GET HEAD".split(" ").indexOf(this.request.method) >= 0 ) {
+
+			}
+			yield* next;
+		})
 		//modify koa-trie-router to allow namespace stripping
 		app.use(require('koa-views')(require('path').resolve('./app/views'), {
 		  map: {
