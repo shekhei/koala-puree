@@ -93,15 +93,13 @@ class Puree extends Emitter {
 		this._middleware.push(mw());
 	}
 	//* app could be a http server or another koala-puree app
-	start(app) {
+	start(app, console) {
 		var self = this;
 		// if ( app instanceof Puree ) {
 			// self = app.partition(this);
 		// }
 		return new Promise(function(resolve, reject){
-			var server = self._server = self._app.listen(self._config.port, "::");
-			server.once('listening', function(){
-
+			function setup() {
 				debug(`middleware setups`);
 				var setups = self._middleware.map(function(el){
 					return el.setup ? el.setup(self) : true;
@@ -109,8 +107,16 @@ class Puree extends Emitter {
 				Promise.all(setups).then(function(){
 					resolve(self);
 				}, reject);
-				
-			})
+			}
+			var server;
+			if ( console ) {
+				server = self._server = self._app.listen(self._config.port, "::");
+			} else {
+				server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock");
+			}
+			server.once('listening', function(){
+				setup();
+			});
 		});
 		
 	}
