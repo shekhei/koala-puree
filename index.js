@@ -149,7 +149,8 @@ Puree.DEFAULTCONFIG = {
 Puree.Spices = {
 	Service: require('./lib/service').Service,
 	Browser: require('./lib/service').Browser,
-	Crypt: require('./lib/crypt')
+	Crypt: require('./lib/crypt'),
+	JWT: require('./lib/jwt')
 }
 exports = module.exports = Puree;
 
