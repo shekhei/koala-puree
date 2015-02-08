@@ -57,7 +57,6 @@ class Puree extends Emitter {
 			}
 			yield next;
 		});
-		app.use(require('koa-trie-router')(app));
 		var self = this;
 		var router = require('koa-trie-router')(app);
 		router._oldmatch = router.match;
