@@ -92,7 +92,7 @@ class Puree extends Emitter {
 		this._middleware.push(mw());
 	}
 	//* app could be a http server or another koala-puree app
-	start(app, console) {
+	start(app, forConsole) {
 		var self = this;
 		// if ( app instanceof Puree ) {
 			// self = app.partition(this);
@@ -108,7 +108,7 @@ class Puree extends Emitter {
 				}, reject);
 			}
 			var server;
-			if ( console ) {
+			if ( forConsole ) {
 				server = self._server = self._app.listen(self._config.port, "::");
 			} else {
 				server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock");
