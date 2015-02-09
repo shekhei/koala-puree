@@ -20,6 +20,7 @@ class Puree extends Emitter {
 				root: "./public"
 			}
 		});
+		app.keys = ["notasecret"]
 		app.use(function*(next){
 			debug("static route")
 			if ( this.request.path ) {

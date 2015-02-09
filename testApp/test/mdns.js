@@ -65,13 +65,13 @@ describe('mDNS', function(){
 					return;
 				} else {
 					sio.once('connect', function(sock){
-						done();
+						if ( done ) {done();}
 						done = undefined;
 					}).once('reconnect', function(sock){
-						done();
+						if ( done ) {done();}
 						done = undefined;
 					}).on('connect_error', function(err){
-						done(err);
+						if ( done ) {done();}
 						done = undefined;
 					})
 				}
