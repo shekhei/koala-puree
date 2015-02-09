@@ -79,6 +79,7 @@ class Puree extends Emitter {
 		this.use(require('./lib/sio.js'));
 		this.use(require('./lib/mdns.js'));
 		this.use(require('./lib/service.js').middleware);
+		this.use(require('./lib/passport.js'));
 		this._ns = "/";
 	}
 	get app() { return this._app; }
