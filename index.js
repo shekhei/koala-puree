@@ -109,9 +109,9 @@ class Puree extends Emitter {
 			}
 			var server;
 			if ( forConsole ) {
-				server = self._server = self._app.listen(self._config.port, "::");
-			} else {
 				server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock");
+			} else {
+				server = self._server = self._app.listen(self._config.port, "::");
 			}
 			server.once('listening', function(){
 				setup();
