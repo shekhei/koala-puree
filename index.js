@@ -12,16 +12,23 @@ var compose = require('koa-compose');
 class Puree extends Emitter {
 	constructor(mod, config) {
 		var pkginfo = require('pkginfo')(mod);
-
 		if (!(this instanceof Puree)) return new Puree(mod, config);
 		debug(`pwd is ${require('path').resolve('.')}`)
 		config = config || "./config/server.yml";
+		process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
+		this._config = extend(Puree.DEFAULTCONFIG, readYaml.sync(config)[process.env.NODE_ENV.toLowerCase()]);
 		var app = this._app = require('koala')({
 			fileServer: {
 				root: "./public"
+			},
+			session: {
+				domain: this._config.passport.domain
 			}
 		});
+		this._config.name = pkginfo.name
+		this._config.version = pkginfo.version;
+		this._pkginfo = pkginfo;
 		app.keys = ["notasecret"]
 		app.use(function*(next){
 			debug("static route")
@@ -54,7 +61,11 @@ class Puree extends Emitter {
 		app.use(function*(next){
 			var self = this;
 			debug('co-dust middleware');
+
 			this.render = function*(path, context){
+				context = context || {};
+				context.loggedIn = self.req.isAuthenticated;
+				context.user = self.req.user;
 				self.body = yield dust.render(path, context);
 			}
 			yield* next;
@@ -63,11 +74,9 @@ class Puree extends Emitter {
 
 
 		app.puree = this;
-		this._config = extend(Puree.DEFAULTCONFIG, readYaml.sync(config)[app.env]);
-		this._config.name = pkginfo.name
-		this._config.version = pkginfo.version;
-		this._pkginfo = pkginfo;
-		this.use(require('./lib/models.js'))
+		if ( this._config.noModel !== true) {
+			this.use(require('./lib/models.js'))
+		}
 		this.use(require('./lib/controllers.js'));
 		this.use(require('./lib/sio.js'));
 		this.use(require('./lib/mdns.js'));
@@ -106,7 +115,7 @@ class Puree extends Emitter {
 					server = self._server = self._app.listen(self._config.port, "::");
 				}
 				server.once('listening', function(){
-					resolve(self);	
+					resolve(self);
 					self.emit('listening', self);
 				});
 			}
@@ -137,7 +146,11 @@ class Puree extends Emitter {
 
 Puree.DEFAULTCONFIG = {
 	port: 3000,
-	host: "0.0.0.0"
+	host: "0.0.0.0",
+	passport: {
+		domain: "localhost",
+		loginUrl: 'locahost/login'
+	}
 }
 Puree.Spices = {
 	Service: require('./lib/service').Service,
