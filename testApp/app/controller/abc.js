@@ -1,6 +1,7 @@
 exports = module.exports = function(router){
 
 	router.get('/test', function*(next){
+		console.log("fuck fuck fuck");
 		this.body = "get";
 	});
 	router.post('/test', function*(next){

@@ -6,6 +6,8 @@ var codust = require('co-dust');
 var mdns = require('mdns');
 var debug = require('debug')('koala-puree')
 var Emitter = require('events').EventEmitter;
+var co = require('co');
+var compose = require('koa-compose');
 
 class Puree extends Emitter {
 	constructor(mod, config) {
@@ -35,7 +37,7 @@ class Puree extends Emitter {
 				}
 			}
 			debug("path doesnt match");
-			yield next;
+			yield* next;
 		})
 		app.use(function*(next){
 			debug("jwt xsrf generation")
@@ -44,7 +46,7 @@ class Puree extends Emitter {
 			if ( "GET HEAD".split(" ").indexOf(this.request.method) >= 0 ) {
 				
 			}
-			yield next;
+			yield* next;
 		})
 		var dust = new codust({base: require('path').resolve('./app/view')});
 		this._dust = dust;
@@ -54,21 +56,11 @@ class Puree extends Emitter {
 			debug('co-dust middleware');
 			this.render = function*(path, context){
 				self.body = yield dust.render(path, context);
-
 			}
-			yield next;
+			yield* next;
 		});
 		var self = this;
-		var router = require('koa-trie-router')(app);
-		router._oldmatch = router.match;
-		router.match = function(str){
-			return str.indexOf(self._ns)===0 ? router._oldmatch.call(router,str.substring(self._ns.length)) : false;
-		}
-		app.use(function*(next){
-			this.models = self.models;
-			yield next;
-		});
-		app.use(router);
+
 
 		app.puree = this;
 		this._config = extend(Puree.DEFAULTCONFIG, readYaml.sync(config)[app.env]);
@@ -96,30 +88,29 @@ class Puree extends Emitter {
 	//* app could be a http server or another koala-puree app
 	start(app, forConsole) {
 		var self = this;
-		// if ( app instanceof Puree ) {
-			// self = app.partition(this);
-		// }
 		return new Promise(function(resolve, reject){
-			function setup() {
-				debug(`middleware setups`);
-				var setups = self._middleware.map(function(el){
-					return el.setup ? el.setup(self) : true;
-				})
-				Promise.all(setups).then(function(){
-					resolve(self);
-				}, reject);
+			
+			// if ( app instanceof Puree ) {
+				// self = app.partition(this);
+			// }
+			var fn = co.wrap(compose([startServer].concat(self._middleware.map(function(el){
+				return el.setup;
+			}).filter(function(el){return undefined !== el;}))));
+			fn.call(self).catch(reject);
+			function* startServer(next){
+				yield* next;
+				var server;
+				if ( forConsole ) {
+					server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock");
+				} else {
+					server = self._server = self._app.listen(self._config.port, "::");
+				}
+				server.once('listening', function(){
+					resolve(self);	
+					self.emit('listening', self);
+				});
 			}
-			var server;
-			if ( forConsole ) {
-				server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock");
-			} else {
-				server = self._server = self._app.listen(self._config.port, "::");
-			}
-			server.once('listening', function(){
-				setup();
-			});
 		});
-		
 	}
 	close(){
 		debug("closing service...")
