@@ -74,7 +74,7 @@ class Puree extends Emitter {
 
 
 		app.puree = this;
-		if ( this._config.noModel !== true) {
+		if ( this._config.noModel != true) {
 			this.use(require('./lib/models.js'))
 		}
 		this.use(require('./lib/controllers.js'));
