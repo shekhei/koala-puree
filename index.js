@@ -74,12 +74,14 @@ class Puree extends Emitter {
 
 
 		app.puree = this;
-		if ( this._config.noModel != true) {
+		
 			this.use(require('./lib/models.js'))
 		}
 		this.use(require('./lib/controllers.js'));
 		this.use(require('./lib/sio.js'));
-		this.use(require('./lib/mdns.js'));
+		if ( this._config.noMdns != true) {
+			this.use(require('./lib/mdns.js'));
+		}
 		this.use(require('./lib/service.js').middleware);
 		this.use(require('./lib/passport.js'));
 		this._ns = "/";
