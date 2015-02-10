@@ -40,7 +40,7 @@ class Puree extends Emitter {
 				if (this.request.path.startsWith(path)) {
 					debug("serving file");
 					yield this.fileServer.send(this.request.path.substr((self._ns+"/static").length));
-					return; 
+					return;
 				}
 			}
 			debug("path doesnt match");
@@ -51,7 +51,7 @@ class Puree extends Emitter {
 			// jwt based xsrf token
 
 			if ( "GET HEAD".split(" ").indexOf(this.request.method) >= 0 ) {
-				
+
 			}
 			yield* next;
 		})
@@ -74,7 +74,7 @@ class Puree extends Emitter {
 
 
 		app.puree = this;
-		
+		if( this._config.noModel != true ) {
 			this.use(require('./lib/models.js'))
 		}
 		this.use(require('./lib/controllers.js'));
@@ -100,7 +100,7 @@ class Puree extends Emitter {
 	start(app, forConsole) {
 		var self = this;
 		return new Promise(function(resolve, reject){
-			
+
 			// if ( app instanceof Puree ) {
 				// self = app.partition(this);
 			// }
