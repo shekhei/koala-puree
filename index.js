@@ -57,6 +57,8 @@ class Puree extends Emitter {
 		})
 		var dust = new codust({base: require('path').resolve('./app/view')});
 		this._dust = dust;
+		var helpers = require('./lib/dust_helpers.js')
+		helpers(dust._dust);
 		//modify koa-trie-router to allow namespace stripping
 		app.use(function*(next){
 			var self = this;
