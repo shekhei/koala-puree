@@ -68,6 +68,7 @@ class Puree extends Emitter {
 				context = context || {};
 				context.loggedIn = self.req.isAuthenticated;
 				context.user = self.req.user;
+				if ( false === this._config.cacheTemplate ) { delete this._dust._dust.cache[path]; }
 				self.body = yield dust.render(path, context);
 			}
 			yield* next;
