@@ -64,7 +64,7 @@ class Puree extends Emitter {
 		app.use(function*(next){
 			//var self = this;
 			debug('co-dust middleware');
-
+			var self = this;
 			this.render = function*(path, context){
 				context = context || {};
 				context.loggedIn = self.req.isAuthenticated;
