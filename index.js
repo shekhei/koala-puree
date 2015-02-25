@@ -62,7 +62,7 @@ class Puree extends Emitter {
 		//modify koa-trie-router to allow namespace stripping
 		var self = this;
 		app.use(function*(next){
-			var self = this;
+			//var self = this;
 			debug('co-dust middleware');
 
 			this.render = function*(path, context){
@@ -74,7 +74,7 @@ class Puree extends Emitter {
 			}
 			yield* next;
 		});
-		
+
 
 
 		app.puree = this;
