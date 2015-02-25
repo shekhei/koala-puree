@@ -60,6 +60,7 @@ class Puree extends Emitter {
 		var helpers = require('./lib/dust_helpers.js')
 		helpers(dust._dust);
 		//modify koa-trie-router to allow namespace stripping
+		var self = this;
 		app.use(function*(next){
 			var self = this;
 			debug('co-dust middleware');
@@ -68,12 +69,12 @@ class Puree extends Emitter {
 				context = context || {};
 				context.loggedIn = self.req.isAuthenticated;
 				context.user = self.req.user;
-				if ( false === this._config.cacheTemplate ) { delete this._dust._dust.cache[path]; }
+				if ( false === app.puree._config.cacheTemplate ) { delete app.puree._dust._dust.cache[path]; }
 				self.body = yield dust.render(path, context);
 			}
 			yield* next;
 		});
-		var self = this;
+		
 
 
 		app.puree = this;
