@@ -8,9 +8,12 @@ var debug = require('debug')('koala-puree')
 var Emitter = require('events').EventEmitter;
 var co = require('co');
 var compose = require('koa-compose');
-
+var closest = require('closest-package');
 class Puree extends Emitter {
 	constructor(mod, config) {
+
+		var closestPath = closest.sync(require('path').dirname(mod.filename));
+		this._basePath = require('path').dirname(closestPath);
 		var pkginfo = require('pkginfo')(mod);
 		if (!(this instanceof Puree)) return new Puree(mod, config);
 		debug(`pwd is ${require('path').resolve('.')}`)
@@ -104,18 +107,12 @@ class Puree extends Emitter {
 	start(app, forConsole) {
 		var self = this;
 		return new Promise(function(resolve, reject){
-
-			// if ( app instanceof Puree ) {
-				// self = app.partition(this);
-			// }
-			var fn = co.wrap(compose([startServer].concat(self._middleware.map(function(el){
-				return el.setup;
-			}).filter(function(el){return undefined !== el;}))));
-			fn.call(self).catch(reject);
+			debug('starting server');
 			function* startServer(next){
 				yield* next;
 				var server;
 				if ( forConsole ) {
+					debug("starting with sock");
 					server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock");
 				} else {
 					server = self._server = self._app.listen(self._config.port, "::");
@@ -125,19 +122,49 @@ class Puree extends Emitter {
 					self.emit('listening', self);
 				});
 			}
+			var serverMw = startServer;
+			if ( app && "__puree_plate__" in app ) {
+				debug('server is mounting');
+				serverMw = function* startMounted(next){
+					debug('starting server mw')
+					yield* next;
+					var server;
+					self._mounted = true;
+					self._server = app._server;
+					app.once('listening', function(){
+						self.emit('listening', self);
+					})
+					debug('resolving for mounting server');
+					resolve(self);
+				}
+			}
+			debug('preparing to start server');
+			try {
+				var fn = co.wrap(compose([serverMw].concat(self._middleware.map(function(el){
+					return el.setup;
+				}).filter(function(el){return undefined !== el;}))));
+			} catch(e) { console.log(e); }
+			debug('starting server...');
+			fn.call(self).catch(reject);
+
 		});
 	}
 	close(){
 		debug("closing service...")
 		var self = this;
 		return new Promise(function(resolve, reject){
-			self._server.close();
-			self._server.on('close', function(err){
-				debug(`server has closed, beginning of the end`);
-				if ( err ) { debug(`server temination failed with ${err}`); return reject(err); }
-				debug(`server closed`);
+			if ( !self._mounted ) {
+				self._server.close();
+				self._server.on('close', function(err){
+					debug(`server has closed, beginning of the end`);
+					if ( err ) { debug(`server temination failed with ${err}`); return reject(err); }
+					debug(`server closed`);
+					resolve();
+				})
+
+			} else {
 				resolve();
-			})
+			}
 			var setups = self._middleware.map(function(el){
 				return el.teardown ? el.teardown(self) : Promise.resolve(true);
 			})

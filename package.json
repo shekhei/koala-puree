@@ -20,6 +20,7 @@
   "author": "Wong Shek Hei Felix",
   "license": "ISC",
   "dependencies": {
+    "closest-package": "^1.0.0",
     "co": "^4.1.0",
     "co-dust": "0.0.1",
     "commander": "2",
