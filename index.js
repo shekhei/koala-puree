@@ -115,7 +115,7 @@ class Puree extends Emitter {
 					debug("starting with sock");
 					server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock");
 				} else {
-					server = self._server = self._app.listen(self._config.port, "::");
+					server = self._server = self._app.listen(self._config.port, self._config.host);
 				}
 				server.once('listening', function(){
 					resolve(self);
@@ -179,7 +179,7 @@ class Puree extends Emitter {
 
 Puree.DEFAULTCONFIG = {
 	port: 3000,
-	host: "0.0.0.0",
+	host: undefined,
 	passport: {
 		domain: "localhost",
 		loginUrl: 'locahost/login'
