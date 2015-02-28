@@ -1,11 +1,18 @@
-#!/usr/bin/env node --harmony
+#!/usr/bin/env node
+
 if ( process.execArgv.indexOf('--harmony') < 0) {
+
 	var spawn = require("child_process").spawn;
-	var child = spawn(process.execPath, ['--harmony'].concat(process.execArgv), {
-	  cwd: require("path").dirname(process.execPath)
+	var args = process.argv.slice(1);
+
+	var child = spawn(process.argv[0], ['--harmony'].concat(args), {
+	  cwd: process.cwd(),
+	  stdio: [
+	  	0,
+	  	1,
+	  	2
+	  ]
 	});
-	child.stdout.pipe(process.stdout);
-	child.stderr.pipe(process.stderr);
 } else {
 	var program = require('commander');
 
