@@ -1,11 +1,5 @@
-module.exports = {
-	attributes: {
-		name: {
-			type: 'string'
-		},
-		aliases: {
-			collection: 'UserAlias',
-			via: 'user'
-		}
-	}
+module.exports = function(orm) {
+	this.attr('alias', function(){
+		return this.hasMany(orm.UserAlias);
+	});
 }

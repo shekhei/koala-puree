@@ -17,31 +17,14 @@ describe('Puree Models', function(){
 		this.timeout(5000);
 		puree.start().then(function(tapp){
 			app = tapp;
-			console.log('destroying all models');
-			Promise.all([
-				new Promise(function(resolve, reject){
-					tapp.models.user.count().then(function(count){
-						if ( count > 0 ) {
-							tapp.models.user.destroy().then(resolve).catch(reject);
-						}else {
-							resolve();
-						}
-					})
-				}),
-				new Promise(function(resolve, reject){
-					tapp.models.useralias.count().then(function(count){
-						if ( count > 0 ) {
-							tapp.models.useralias.destroy().then(resolve).catch(reject);
-						}else {
-							resolve();
-						}
-					})
-				})
-			]).then(function(){
-				done();
-			}, function(err){
-				done(err);
-			});
+			tapp.models.UserAlias.query(function(qb){
+				return qb.del();
+			}).fetch().then(function(){
+				tapp.models.User.query(function(qb){
+					return qb.del();
+				}).fetch().then(function(){done();});
+			})
+
 			// service = new Service('koala-puree-test', '0.0.1');
 		},function(err){
 			done(err);
@@ -56,24 +39,33 @@ describe('Puree Models', function(){
 	})
 	it("should contain a User model", function(done){
 		expect(app).to.have.property("models");
-		expect(app.models).to.have.property("user");
+		expect(app.models).to.have.property("User");
 		done();
 	});
 	it('Should add a new user', function(done){
-		app.models.user.create({name: "felix", aliases: [{type: 'openid', value:'abc'}]}).populate('aliases').exec(function(err, user){
-			if ( err ) { return done(err);}
-			expect(user.name).eql('felix');
+		app._orm.transaction(function(t){
+
+			return app.models.User
+				.forge({name: "felix"})
+				.save(null, {transacting:t})
+				.tap(function(model){
+					return app.models.UserAlias.forge({type: 'openid', value:'abc'}).save('user_id', model.id, {transacting:t});
+				});
+		}).then(function(){
 			done();
-		})
+		});	
 	})
 	it('Should be able to retrive previous user', function(done){
-		app.models.user.findOne({name: "felix"}).populate('aliases').then(function(user){
-			expect(user.name).eql('felix');
-			expect(user.aliases.length).eql(1);
-			expect(user.aliases[0].type).eql('openid');
-			done();
-		}).catch(function(err){
-			done(err);
-		});
+		app.models.User
+			.forge({name: "felix"})
+			.fetch({withRelated:['alias']})
+			.then(function(user){
+				expect(user.get('name')).eql('felix');
+				expect(user.related('alias').length).eql(1);
+				expect(user.related('alias').at(0).get('type')).eql('openid');
+				done();
+			}).catch(function(err){
+				done(err);
+			});
 	})
 });

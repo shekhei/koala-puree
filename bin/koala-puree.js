@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+var knex = require("knex"),
+	yaml = require('read-yaml');
+
+var env = process.env.NODE_ENV || "development";
+
+
 if ( process.execArgv.indexOf('--harmony') < 0) {
 
 	var spawn = require("child_process").spawn;
@@ -15,7 +21,7 @@ if ( process.execArgv.indexOf('--harmony') < 0) {
 	});
 } else {
 	var program = require('commander');
-
+	var path = require('path').resolve(process.cwd()+'/index.js');
 	program.version('0.0.1')
 		.command('start')
 		.description('starts a simple server based on your config/server.yml')
@@ -25,26 +31,48 @@ if ( process.execArgv.indexOf('--harmony') < 0) {
 	//		if ( require('fs').existsSync(path) ) {
 	//			var child = require('child_process').spawn(path, ["start"]);
 	//		} else {
-				path = require('path').resolve(process.cwd()+'/index.js');
+				var path = require('path').resolve(process.cwd()+'/index.js');
 				// console.log(path);
 				var TestApp = require(path);
 				var App = new TestApp();
 				App.start();
 	//		}
 		})
+	program.command('generate:migration')
+		.action(function(){
+			console.log(arguments);
+			var pureeorm = require('../lib/models.js')();
+			var TestApp = require(path);
+			var app = new TestApp();
+			pureeorm.createMigration(app, arguments[0]).then(function(){
+				console.log("done");
+				process.exit(0);
+			});
+			// pureeorm.make()
+		})
 	program.command('migrate')
 		.description('migrates data')
 		.action(function(){
-			console.log("migrating data now");
-			process.env.MODELSYNC = 1;
-			path = require('path').resolve(process.cwd()+'/index.js');
-			// console.log(path);
+			console.log(arguments);
+			var pureeorm = require('../lib/models.js')();
 			var TestApp = require(path);
-			var App = new TestApp();
-			App.start(null, true).then(function(){
-				console.log("It is completed");
+			var app = new TestApp();
+			pureeorm.migrate(app).then(function(){
+				console.log("done");
 				process.exit(0);
-			});
+			})
+		})
+	program.command('migrate:rollback')
+		.description('rollback')
+		.action(function(){
+			console.log(arguments);
+			var pureeorm = require('../lib/models.js')();
+			var TestApp = require(path);
+			var app = new TestApp();
+			pureeorm.rollback(app).then(function(){
+				console.log("done");
+				process.exit(0);
+			})
 		})
 	program.parse(process.argv);
 }
