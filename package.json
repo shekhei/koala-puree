@@ -46,6 +46,7 @@
     "koa-trie-router": "^1.0.10",
     "koa-views": "git://github.com/eskygo/koa-views.git",
     "koala": "^0.9.1",
+    "lodash": "^3.4.0",
     "mdns": "git://github.com/eskygo/node_mdns.git",
     "methods": "^1.1.1",
     "mock-req": "^0.1.0",
