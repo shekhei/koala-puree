@@ -20,7 +20,7 @@ class Puree extends Emitter {
 		config = config || "./config/server.yml";
 		process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
-		this._config = extend(Puree.DEFAULTCONFIG, readYaml.sync(config)[process.env.NODE_ENV.toLowerCase()]);
+		this._config = extend({}, Puree.DEFAULTCONFIG, readYaml.sync(require('path').resolve(this._basePath,config))[process.env.NODE_ENV.toLowerCase()]);
 		var app = this._app = require('koala')({
 			fileServer: {
 				root: "./public"
@@ -31,18 +31,20 @@ class Puree extends Emitter {
 		});
 		this._config.name = pkginfo.name
 		this._config.version = pkginfo.version;
+
 		this._pkginfo = pkginfo;
 		app.keys = ["notasecret"]
 		app.use(function*(next){
 			debug("static route")
 			if ( this.request.path ) {
 				var path = "/static"
-				if ( self._ns && self._ns !== "/" ) {
-					path = self._ns+path;
+				if ( self.ns && self.ns !== "/" ) {
+					path = self.ns+path;
 				}
 				if (this.request.path.startsWith(path)) {
 					debug("serving file");
-					yield this.fileServer.send(this.request.path.substr((self._ns+"/static").length));
+					// have to remove the starting slash too
+					yield this.fileServer.send(this.request.path.substr(path.length+1));
 					return;
 				}
 			}
@@ -91,10 +93,12 @@ class Puree extends Emitter {
 		}
 		this.use(require('./lib/service.js').middleware);
 		this.use(require('./lib/passport.js'));
-		this._ns = "/";
+		this.ns = "/";
 	}
 	get app() { return this._app; }
 	get sio() { return this._sio; }
+	get config() { return this._config; }
+	set config(config) { return this._config = config; }
 	set namespace(ns) { this._ns = ns; this.emit('namespace', ns);}
 	get namespace() { return this._ns; }
 	get middleware() { return this._middleware; }
@@ -109,33 +113,50 @@ class Puree extends Emitter {
 		return new Promise(function(resolve, reject){
 			debug('starting server');
 			function* startServer(next){
-				yield* next;
+				debug('starting startServer Mw');
+
 				var server;
+				yield* next;
 				if ( forConsole ) {
 					debug("starting with sock");
 					server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock");
 				} else {
 					server = self._server = self._app.listen(self._config.port, self._config.host);
 				}
+				var completed = false;
 				server.once('listening', function(){
+					if ( completed ) {
+						resolve(self);
+						self.emit('listening', self);
+					}
+					completed = true;
+				});
+				
+				if ( completed ) {
 					resolve(self);
 					self.emit('listening', self);
-				});
+				}
+				completed = true;
 			}
 			var serverMw = startServer;
 			if ( app && "__puree_plate__" in app ) {
+				self._mounted = true;
+				self._server = app._server;
+				self._sioInstance = app._sioInstance;
 				debug('server is mounting');
 				serverMw = function* startMounted(next){
 					debug('starting server mw')
-					yield* next;
+					
 					var server;
-					self._mounted = true;
-					self._server = app._server;
+					// console.log(self._server);
+					
 					app.once('listening', function(){
 						self.emit('listening', self);
 					})
 					debug('resolving for mounting server');
+					yield* next;
 					resolve(self);
+
 				}
 			}
 			debug('preparing to start server');
