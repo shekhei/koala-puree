@@ -110,6 +110,7 @@ class Puree extends Emitter {
 	//* app could be a http server or another koala-puree app
 	start(app, forConsole) {
 		var self = this;
+		self._forConsole = forConsole;
 		return new Promise(function(resolve, reject){
 			debug('starting server');
 			function* startServer(next){
@@ -119,7 +120,7 @@ class Puree extends Emitter {
 				yield* next;
 				if ( forConsole ) {
 					debug("starting with sock");
-					self._forConsole = true;
+
 					server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock");
 				} else {
 					server = self._server = self._app.listen(self._config.port, self._config.host);
