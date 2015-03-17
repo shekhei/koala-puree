@@ -119,6 +119,7 @@ class Puree extends Emitter {
 				yield* next;
 				if ( forConsole ) {
 					debug("starting with sock");
+					self._forConsole = true;
 					server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock");
 				} else {
 					server = self._server = self._app.listen(self._config.port, self._config.host);
