@@ -27,6 +27,9 @@ class Puree extends Emitter {
 			},
 			session: {
 				domain: this._config.passport.domain
+			},
+			security: {
+				xframe: 'same'
 			}
 		});
 		this._config.name = pkginfo.name
