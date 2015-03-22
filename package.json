@@ -1,6 +1,6 @@
 {
   "name": "koala-puree",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "a koa(koala) project meshup",
   "main": "index.js",
   "bin": {
@@ -8,7 +8,7 @@
     "koala-puree-start": "./bin/koala-puree-start.js"
   },
   "publishConfig": {
-    "registry":"http://172.16.122.30:4873/"
+    "registry": "http://172.16.122.30:4873/"
   },
   "scripts": {
     "test": "mocha"
