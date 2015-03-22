@@ -3,7 +3,13 @@
   "version": "0.0.1",
   "description": "a koa(koala) project meshup",
   "main": "index.js",
-  "bin": "./bin/koala-puree.js",
+  "bin": {
+    "koala-puree": "./bin/koala-puree.js",
+    "koala-puree-start": "./bin/koala-puree-start.js"
+  },
+  "publishConfig": {
+    "registry":"http://172.16.122.30:4873/"
+  },
   "scripts": {
     "test": "mocha"
   },
@@ -64,6 +70,7 @@
     "socket.io-client": "^1.3.2",
     "watch": "^0.13.0"
   },
+  "readme": "README.md",
   "devDependencies": {
     "chai": "^1.10.0",
     "chai-http": "^1.0.0",
