@@ -54,6 +54,7 @@ class Puree extends Emitter {
 			debug("path doesnt match");
 			yield* next;
 		})
+
 		app.use(function*(next){
 			debug("jwt xsrf generation")
 			// jwt based xsrf token
@@ -96,6 +97,7 @@ class Puree extends Emitter {
 		}
 		this.use(require('./lib/service.js').middleware);
 		this.use(require('./lib/passport.js'));
+		this.use(require('./lib/crypt.js'));
 		this.ns = "/";
 	}
 	get app() { return this._app; }
