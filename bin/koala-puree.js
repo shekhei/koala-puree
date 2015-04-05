@@ -74,5 +74,21 @@ if ( process.execArgv.indexOf('--harmony') < 0) {
 				process.exit(0);
 			})
 		})
+	program.command('db:seed')
+		.description('seeding')
+		.action(function(){
+			console.log(arguments);
+			var pureeorm = require('../lib/models.js')();
+			var TestApp = require(path);
+			var app = new TestApp();
+			app.start(undefined, true).then(function(){
+				pureeorm.seed(app).then(function(){
+					app.close().then(function(){
+						console.log("done");
+						process.exit(0);
+					})
+				})
+			})
+		})
 	program.parse(process.argv);
 }
