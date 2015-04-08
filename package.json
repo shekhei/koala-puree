@@ -1,6 +1,6 @@
 {
   "name": "koala-puree",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "a koa(koala) project meshup",
   "main": "index.js",
   "bin": {
