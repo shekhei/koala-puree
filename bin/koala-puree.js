@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-var knex = require("knex"),
-	yaml = require('read-yaml');
+var yaml = require('read-yaml');
 
 var env = process.env.NODE_ENV || "development";
 
