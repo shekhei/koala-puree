@@ -138,7 +138,7 @@ class Puree extends Emitter {
 					}
 					completed = true;
 				});
-				
+
 				if ( completed ) {
 					resolve(self);
 					self.emit('listening', self);
@@ -153,10 +153,10 @@ class Puree extends Emitter {
 				debug('server is mounting');
 				serverMw = function* startMounted(next){
 					debug('starting server mw')
-					
+
 					var server;
 					// console.log(self._server);
-					
+
 					app.once('listening', function(){
 						self.emit('listening', self);
 					})
@@ -171,7 +171,7 @@ class Puree extends Emitter {
 				var fn = co.wrap(compose([serverMw].concat(self._middleware.map(function(el){
 					return el.setup;
 				}).filter(function(el){return undefined !== el;}))));
-			} catch(e) { console.log(e); }
+			} catch(e) { console.log(e.stack); }
 			debug('starting server...');
 			fn.call(self).catch(reject);
 
