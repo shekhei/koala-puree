@@ -11,7 +11,7 @@ var compose = require('koa-compose');
 var closest = require('closest-package');
 class Puree extends Emitter {
 	constructor(mod, config) {
-
+        super();
 		var closestPath = closest.sync(require('path').dirname(mod.filename));
 		this._basePath = require('path').dirname(closestPath);
 		var pkginfo = require('pkginfo')(mod);
