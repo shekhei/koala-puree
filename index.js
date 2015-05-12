@@ -9,6 +9,7 @@ var Emitter = require('events').EventEmitter;
 var co = require('co');
 var compose = require('koa-compose');
 var closest = require('closest-package');
+var moment = require('./lib/moment_helpers.js');
 class Puree extends Emitter {
 	constructor(mod, config) {
         super();
@@ -78,6 +79,7 @@ class Puree extends Emitter {
 				context = context || {};
 				context.loggedIn = self.req.isAuthenticated;
 				context.user = self.req.user;
+				context.today = moment();
 				if ( false === app.puree._config.cacheTemplate ) { delete app.puree._dust._dust.cache[path]; }
 				self.body = yield dust.render(path, context);
 			}
