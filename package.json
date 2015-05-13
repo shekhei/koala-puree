@@ -54,7 +54,7 @@
     "mock-res": "^0.2.1",
     "moment": "^2.9.0",
     "node-forge": "^0.6.20",
-    "orientose": "git://github.com/eskygo/orientose.git",
+    "@eskygo/orientose": "^0.3.4",
     "passport-strategy": "^1.0.0",
     "pkginfo": "git://github.com/shekhei/node-pkginfo.git",
     "querystring": "^0.2.0",
