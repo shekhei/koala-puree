@@ -10,6 +10,7 @@ var co = require('co');
 var compose = require('koa-compose');
 var closest = require('closest-package');
 var moment = require('./lib/moment_helpers.js');
+
 class Puree extends Emitter {
 	constructor(mod, config) {
         super();
@@ -38,6 +39,7 @@ class Puree extends Emitter {
 
 		this._pkginfo = pkginfo;
 		app.keys = ["notasecret"]
+
 		app.use(function*(next){
 			debug("static route")
 			if ( this.request.path ) {
@@ -72,6 +74,7 @@ class Puree extends Emitter {
 		//modify koa-trie-router to allow namespace stripping
 		var self = this;
 		app.use(function*(next){
+
 			//var self = this;
 			debug('co-dust middleware');
 			var self = this;
@@ -147,6 +150,7 @@ class Puree extends Emitter {
 				}
 				completed = true;
 			}
+
 			var serverMw = startServer;
 			if ( app && "__puree_plate__" in app ) {
 				self._mounted = true;
