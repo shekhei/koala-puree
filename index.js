@@ -125,7 +125,7 @@ class Puree extends Emitter {
 			debug('starting server');
 			function* startServer(next){
 				debug('starting startServer Mw');
-
+                require('pmx').init();
 				var server;
 				yield* next;
 				if ( forConsole ) {
