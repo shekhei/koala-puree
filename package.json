@@ -24,7 +24,7 @@
   "license": "ISC",
   "dependencies": {
     "@eskygo/koala": "^0.9.4",
-    "@eskygo/orientose": "^0.3.10",
+    "@eskygo/orientose": "^0.3.11",
     "async": "^0.9.0",
     "bluebird": "^2.9.25",
     "closest-package": "^1.0.0",
