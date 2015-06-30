@@ -47,9 +47,13 @@ class Puree extends Emitter {
 				if ( self.ns && self.ns !== "/" ) {
 					path = self.ns+path;
 				}
-				if (this.request.path.startsWith(path)) {
+
+				if (this.request.url.startsWith(path)) {
+					console.log(this.request.url.substr(0,this.request.url.indexOf('?')))
 					debug("serving file");
 					// have to remove the starting slash too
+					// and remove the query string
+
 					yield this.fileServer.send(this.request.path.substr(path.length+1));
 					return;
 				}
@@ -133,10 +137,12 @@ class Puree extends Emitter {
 
 					server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock");
 				} else {
+                    debug("Trying to listen to", self._config.port, self._config.host);
 					server = self._server = self._app.listen(self._config.port, self._config.host);
 				}
 				var completed = false;
 				server.once('listening', function(){
+                    debug("Receiving listening event!");
 					if ( completed ) {
 						resolve(self);
 						self.emit('listening', self);
@@ -145,6 +151,7 @@ class Puree extends Emitter {
 				});
 
 				if ( completed ) {
+                    debug("It has already completed")
 					resolve(self);
 					self.emit('listening', self);
 				}
