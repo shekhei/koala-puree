@@ -52,6 +52,7 @@
     "lodash": "^3.8.0",
     "mdns": "git://github.com/eskygo/node_mdns.git",
     "methods": "^1.1.1",
+    "mkdirp": "^0.5.1",
     "mock-req": "^0.2.0",
     "mock-res": "^0.2.1",
     "moment": "^2.10.3",
@@ -69,6 +70,7 @@
   "devDependencies": {
     "chai": "^2.3.0",
     "chai-http": "^1.0.0",
-    "mocha": "^2.2.5"
+    "mocha": "^2.2.5",
+    "jsdoc": "https://github.com/jsdoc3/jsdoc.git"
   }
 }
