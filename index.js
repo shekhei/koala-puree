@@ -39,7 +39,7 @@ class Puree extends Emitter {
 
 		this._pkginfo = pkginfo;
 		app.keys = ["notasecret"]
-
+		var self = this;
 		app.use(function*(next){
 			debug("static route")
 			if ( this.request.path ) {
@@ -71,27 +71,6 @@ class Puree extends Emitter {
 			}
 			yield* next;
 		})
-		var dust = new codust({base: require('path').resolve('./app/view')});
-		this._dust = dust;
-		var helpers = require('./lib/dust_helpers.js')
-		helpers(dust._dust);
-		//modify koa-trie-router to allow namespace stripping
-		var self = this;
-		app.use(function*(next){
-
-			//var self = this;
-			debug('co-dust middleware');
-			var self = this;
-			this.render = function*(path, context){
-				context = context || {};
-				context.loggedIn = self.req.isAuthenticated;
-				context.user = self.req.user;
-				context.today = moment();
-				if ( false === app.puree._config.cacheTemplate ) { delete app.puree._dust._dust.cache[path]; }
-				self.body = yield dust.render(path, context);
-			}
-			yield* next;
-		});
 
 
 
@@ -99,14 +78,17 @@ class Puree extends Emitter {
 		if( this._config.noModel != true ) {
 			this.use(require('./lib/models.js'))
 		}
+		this.use(require('./lib/dust.js'), {precompile: this._config.precompileTemplates === true});
 		this.use(require('./lib/controllers.js'));
 		this.use(require('./lib/sio.js'));
+
 		if ( this._config.noMdns != true) {
 			this.use(require('./lib/mdns.js'));
 		}
 		this.use(require('./lib/service.js').middleware);
 		this.use(require('./lib/passport.js'));
 		this.use(require('./lib/crypt.js'));
+
 		this.ns = "/";
 	}
 	get app() { return this._app; }
@@ -119,7 +101,12 @@ class Puree extends Emitter {
 	use(mw){
 		this._middleware = this._middleware || [];
 		debug("adding middleware");
-		this._middleware.push(mw());
+	    var args = new Array(arguments.length);
+	    for(var i = 1; i < args.length; ++i) {
+	                //i is always valid index in the arguments object
+	        args[i-1] = arguments[i];
+	    }
+		this._middleware.push(mw.apply(this, args));
 	}
 	//* app could be a http server or another koala-puree app
 	start(app, forConsole) {
@@ -145,6 +132,7 @@ class Puree extends Emitter {
                     debug("Receiving listening event!");
 					if ( completed ) {
 						resolve(self);
+						self.bootstrap && self.bootstrap();
 						self.emit('listening', self);
 					}
 					completed = true;
@@ -171,6 +159,7 @@ class Puree extends Emitter {
 					// console.log(self._server);
 
 					app.once('listening', function(){
+						self.bootstrap && self.bootstrap();
 						self.emit('listening', self);
 					})
 					debug('resolving for mounting server');
