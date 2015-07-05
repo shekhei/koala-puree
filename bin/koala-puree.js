@@ -37,6 +37,35 @@ if ( process.execArgv.indexOf('--harmony') < 0) {
 				App.start();
 	//		}
 		})
+	program.command('profile')
+		.description('starts a simple server based on your config/server.yml with profiling on')
+		.action(function(){
+			// console.log("action is starting");
+			// console.log(process.cwd());
+	//		if ( require('fs').existsSync(path) ) {
+	//			var child = require('child_process').spawn(path, ["start"]);
+	//		} else {
+                var profiler = require('v8-profiler');
+                profiler.startProfiling("profiler");
+				var path = require('path').resolve(process.cwd()+'/index.js');
+				// console.log(path);
+				var TestApp = require(path);
+				var App = new TestApp();
+				App.start();
+                function onSIGTERM() {
+                    console.log("we are killing it now")
+                    App.close();
+                    var cpuprofile = profiler.stopProfiling('profiler');
+                    require('fs').writeFileSync(
+                            process.cwd() + '/koala.cpuprofile'
+                          , JSON.stringify(cpuprofile, null, 2)
+                          , 'utf8'
+                        )
+                }
+                process.on('SIGINT', onSIGTERM);
+	//		}
+		})
+
 	program.command('generate:migration')
 		.action(function(){
 			console.log(arguments);
