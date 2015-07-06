@@ -30,7 +30,7 @@
     "closest-package": "^1.0.0",
     "co": "^4.5.4",
     "co-body": "^2.0.0",
-    "co-dust": "0.0.1",
+    "co-dust": "0.0.2",
     "commander": "2",
     "cookies": "git://github.com/eskygo/cookies.git",
     "debug": "^2.2.0",
