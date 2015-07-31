@@ -10,7 +10,7 @@ var co = require('co');
 var compose = require('koa-compose');
 var closest = require('closest-package');
 var moment = require('./lib/moment_helpers.js');
-
+var Cookies = require('cookies');
 class Puree extends Emitter {
 	constructor(mod, config) {
         super();
@@ -34,12 +34,17 @@ class Puree extends Emitter {
 				xframe: 'same'
 			}
 		});
-		this._config.name = pkginfo.name
+
+        this._config.name = pkginfo.name
 		this._config.version = pkginfo.version;
 
 		this._pkginfo = pkginfo;
 		app.keys = ["notasecret"]
 		var self = this;
+		app.use(function*(next){
+	    this.cookies = new Cookies(this.req, this.res, app.keys);
+	    yield* next;
+		});
 		app.use(function*(next){
 			debug("static route")
 			if ( this.request.path ) {
@@ -89,7 +94,7 @@ class Puree extends Emitter {
 		this.use(require('./lib/passport.js'));
 		this.use(require('./lib/crypt.js'));
 
-		this.ns = "/";
+        this.ns = "/";
 	}
 	get app() { return this._app; }
 	get sio() { return this._sio; }
@@ -119,6 +124,7 @@ class Puree extends Emitter {
                 require('pmx').init();
 				var server;
 				yield* next;
+				debug("going into send step of starting server")
 				if ( forConsole ) {
 					debug("starting with sock");
 
@@ -164,6 +170,7 @@ class Puree extends Emitter {
 					})
 					debug('resolving for mounting server');
 					yield* next;
+					debug("going into send step of starting server for platter")
 					resolve(self);
 
 				}
@@ -222,5 +229,3 @@ Puree.Spices = {
 	JWT: require('./lib/jwt')
 }
 exports = module.exports = Puree;
-
-
