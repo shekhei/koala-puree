@@ -1,6 +1,34 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * This module creates a wrapper around the orientose orm
- *
+ * 
  * @module lib/models
  * @link OrientoseModelPlugin
  */
@@ -9,8 +37,7 @@
 
 var puree = require('../index'),
     glob = require("glob"),
-    logger = require('debug'),
-    debug = logger('koala-puree:models'),
+    debug = require('debug')('koala-puree:models'),
     Orientose = require('@eskygo/orientose'),
     Promise = require('bluebird'),
     Schema = Orientose.Schema;
@@ -20,7 +47,7 @@ var DEFAULTCONFIG = {
 }
 
 /**
- *
+ * 
  */
 class ModelBuilder {
     constructor(orientose, name, modelDef, app) {
@@ -59,7 +86,7 @@ class ModelBuilder {
         });
 
         var names = Object.getOwnPropertyNames(this._modelDef);
-        for ( var i = 0; i < names.length; i++ ) {
+        for ( var i = 0; i &lt; names.length; i++ ) {
             var name = names[i];
             var property = Object.getOwnPropertyDescriptor(this._modelDef, name);
             if ( require('util').isFunction(property.value)) {
@@ -92,11 +119,11 @@ class ModelBuilder {
             return self._app;
         })
         var names = Object.getOwnPropertyNames(this._modelDef.prototype);
-        for ( var i = 0; i < names.length; i++ ) {
+        for ( var i = 0; i &lt; names.length; i++ ) {
             // virtuals and methods
             var name = names[i];
             var desc = Object.getOwnPropertyDescriptor(self._modelDef.prototype, name);
-            debug(name, desc);
+            console.log(name, desc);
             if ( desc.get || desc.set ) {
                 var v = schema.virtual(name);
                 if ( desc.get ) {
@@ -131,7 +158,7 @@ class ModelBuilder {
                                             ._db
                                             .query(qs.join(" "));
                             return query.then(function(m) {
-                                debug(m);
+                                console.log(m);
                                 var model = self._omodel(rel.clz)._model;
                                 if ( one ) {
                                     return Promise.resolve(model._createDocument(m[0]));
@@ -140,7 +167,7 @@ class ModelBuilder {
                                     return model._createDocument(m);
                                 }));
                             });
-                        })
+                        })                        
 
                     } else {
                         throw "A link type must be defined for "+name;
@@ -153,11 +180,11 @@ class ModelBuilder {
             for (var name in this._pre) {
                 schema.pre(name, (function(name){
                     return function(done){
-                        debug("running pre", name, here)
+                        console.log("running pre", name, here)
                         var here = this;
                         function next(i){
                             if ( i >= self._pre[name].length ) {
-                                debug(done);
+                                console.log(done);
                                 return done.call(here);
                             }
                             return self._pre[name][i].call(here, function(){
@@ -193,7 +220,7 @@ class ModelBuilder {
         return new Promise(function(resolve, reject) {
             try {
                 if (self._later) {
-                    for (var i = 0; i < self._later.length; i++) {
+                    for (var i = 0; i &lt; self._later.length; i++) {
                         self._later[i].call(self, schemas);
                     }
                     return resolve();
@@ -289,7 +316,7 @@ module.exports = function OrientoseModelPlugin() {
     /**
      * @class OrientoseModelPlugin
      */
-    var obj = {
+    var OrientoseModelPlugin = {
         /**
          * In general this will setup the model and insert app.Orientose, app._orm and app.models into koala-puree
          * will also add models into the context of the controller
@@ -354,7 +381,7 @@ module.exports = function OrientoseModelPlugin() {
                         // app.models[name] = context[name];
                         debug(`loading ${f}`);
                     }
-                    for (var i = 0; i < builders.length; i++) {
+                    for (var i = 0; i &lt; builders.length; i++) {
                         schemas[builders[i]._name] = builders[i]._schema;
                     }
                     resolve();
@@ -379,7 +406,7 @@ module.exports = function OrientoseModelPlugin() {
                             // app.models[name] = context[name];
                             debug(`loading ${f}`);
                         }
-                        for (var i = 0; i < builders.length; i++) {
+                        for (var i = 0; i &lt; builders.length; i++) {
                             schemas[builders[i]._name] = builders[i]._schema;
                         }
                         resolve();
@@ -397,7 +424,7 @@ module.exports = function OrientoseModelPlugin() {
                     return b.build();
                 }));
             }).then(function(models) {
-                for (var i = 0; i < models.length; i++) {
+                for (var i = 0; i &lt; models.length; i++) {
                     app.models[models[i][0]] = models[i][1];
                 }
             });
@@ -435,8 +462,7 @@ module.exports = function OrientoseModelPlugin() {
                 user: username,
                 password: password,
                 port: port,
-                name: dbname,
-                logger: {debug: logger("orientose:debug")}
+                name: dbname
             };
             debug("config retrieved for applicatin", config);
             return config;
@@ -522,3 +548,26 @@ module.exports = function OrientoseModelPlugin() {
     }
     return obj;
 };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-lib_models.html">lib/models</a></li></ul><h3>Classes</h3><ul><li><a href="module-lib_models-ModelBuilder.html">ModelBuilder</a></li><li><a href="module-lib_models-OrientoseModelPlugin.html">OrientoseModelPlugin</a></li></ul><h3>Global</h3><ul><li><a href="global.html#login">login</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Fri Jul 10 2015 18:15:04 GMT+0800 (CST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

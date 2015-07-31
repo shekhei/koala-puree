@@ -30,11 +30,15 @@ if ( process.execArgv.indexOf('--harmony') < 0) {
 	//		if ( require('fs').existsSync(path) ) {
 	//			var child = require('child_process').spawn(path, ["start"]);
 	//		} else {
+            try {
 				var path = require('path').resolve(process.cwd()+'/index.js');
 				// console.log(path);
 				var TestApp = require(path);
 				var App = new TestApp();
 				App.start();
+            } catch(e) {
+                console.log("failed to start", e);
+            }
 	//		}
 		})
 	program.command('profile')
