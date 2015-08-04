@@ -11,6 +11,9 @@ var compose = require('koa-compose');
 var closest = require('closest-package');
 var moment = require('./lib/moment_helpers.js');
 var Cookies = require('cookies');
+var http = require('http');
+var http2 = require('http2');
+var fs = require('fs');
 class Puree extends Emitter {
 	constructor(mod, config) {
         super();
@@ -34,6 +37,44 @@ class Puree extends Emitter {
 				xframe: 'same'
 			}
 		});
+		app.listen = function listen(port, cb, options) {
+
+	    if (typeof port === 'function') options = cb, cb = port, port = null;
+	    var fn = app.callback();
+			var server;
+			if ( options.ssl ) {
+        require('./lib/passport-req')(http2.IncomingRequest.prototype);
+            //options.ssl.log = require('bunyan')({name: "http2"})
+            server = http2.createServer(options.ssl);
+            server.address = server._server.address.bind(server._server);
+				var oldfn = fn;
+				fn = function(req, res){
+					req.connection = req.connection || req.socket;
+					res.socket = res.socket || res.stream;
+					res.stream.on('end', function(){
+						console.log('at least this is ended?!?!?!?!');
+					})
+					res.connection = res.connection || res.socket;
+					oldfn(req, res);
+				}
+				var oldcb = cb;
+				cb = function() {
+					server.emit('listening');
+					oldcb && oldcb();
+				}
+			} else {
+				server = http.createServer();
+			}
+
+	    server.on('request', fn);
+	    server.on('checkContinue', function (req, res) {
+	      req.checkContinue = true;
+	      fn(req, res);
+	    });
+    	server.listen(port || process.env.PORT, cb);
+
+	    return server;
+	  }
 
         this._config.name = pkginfo.name
 		this._config.version = pkginfo.version;
@@ -125,17 +166,25 @@ class Puree extends Emitter {
 				var server;
 				yield* next;
 				debug("going into send step of starting server")
+                var options = {};
+                if ( self._config.ssl ) {
+                    options.ssl = {
+                        key: fs.readFileSync(self._config.ssl.key),
+                        cert: fs.readFileSync(self._config.ssl.cert)
+                    }
+                }
 				if ( forConsole ) {
 					debug("starting with sock");
 
 					server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock");
 				} else {
-                    debug("Trying to listen to", self._config.port, self._config.host);
-					server = self._server = self._app.listen(self._config.port, self._config.host);
+          debug("Trying to listen to", self._config.port, self._config.host);
+					server = self._server = self._app.listen(self._config.port, self._config.host, options);
 				}
 				var completed = false;
-				server.once('listening', function(){
-                    debug("Receiving listening event!");
+				debug("waiting for listen event");
+				server.on('listening', function(){
+          debug("Receiving listening event!");
 					if ( completed ) {
 						resolve(self);
 						self.bootstrap && self.bootstrap();
@@ -145,10 +194,11 @@ class Puree extends Emitter {
 				});
 
 				if ( completed ) {
-                    debug("It has already completed")
+          debug("It has already completed")
 					resolve(self);
 					self.emit('listening', self);
 				}
+				debug("should get here");
 				completed = true;
 			}
 
@@ -180,10 +230,11 @@ class Puree extends Emitter {
 				var fn = co.wrap(compose([serverMw].concat(self._middleware.map(function(el){
 					return el.setup;
 				}).filter(function(el){return undefined !== el;}))));
+				debug('starting server...');
+				fn.call(self).catch(reject);
 			} catch(e) { console.log(e.stack); }
-			debug('starting server...');
-			fn.call(self).catch(reject);
-
+		}).catch(function(err){
+			console.log(err);
 		});
 	}
 	close(){
