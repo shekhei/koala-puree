@@ -158,7 +158,9 @@ class Puree extends Emitter {
 	start(app, forConsole) {
 		var self = this;
 		self._forConsole = forConsole;
+
 		return new Promise(function(resolve, reject){
+			self.bootstrap && self.bootstrap();
 			debug('starting server');
 			function* startServer(next){
 				debug('starting startServer Mw');
@@ -187,7 +189,6 @@ class Puree extends Emitter {
           debug("Receiving listening event!");
 					if ( completed ) {
 						resolve(self);
-						self.bootstrap && self.bootstrap();
 						self.emit('listening', self);
 					}
 					completed = true;
@@ -215,7 +216,6 @@ class Puree extends Emitter {
 					// console.log(self._server);
 
 					app.once('listening', function(){
-						self.bootstrap && self.bootstrap();
 						self.emit('listening', self);
 					})
 					debug('resolving for mounting server');
