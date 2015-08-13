@@ -40,6 +40,7 @@ class Puree extends Emitter {
 		app.listen = function listen(port, cb, options) {
 
 	    if (typeof port === 'function') options = cb, cb = port, port = null;
+			options = options || {};
 	    var fn = app.callback();
 			var server;
 			if ( options.ssl ) {
