@@ -122,6 +122,7 @@ class Puree extends Emitter {
 
 
 		app.puree = this;
+		this.use(require('./lib/jwt_plugin.js'));
 		if( this._config.noModel != true ) {
 			this.use(require('./lib/models.js'))
 		}
@@ -153,7 +154,10 @@ class Puree extends Emitter {
 	                //i is always valid index in the arguments object
 	        args[i-1] = arguments[i];
 	    }
-		this._middleware.push(mw.apply(this, args));
+		if ( require("util").isFunction(mw)) {
+			mw = mw.apply(this, args);
+		}
+		this._middleware.push(mw)
 	}
 	//* app could be a http server or another koala-puree app
 	start(app, forConsole) {
@@ -235,7 +239,7 @@ class Puree extends Emitter {
 				fn.call(self).catch(reject);
 			} catch(e) { console.log(e.stack); }
 		}).catch(function(err){
-			console.log(err);
+			console.log(err.stack);
 		});
 	}
 	close(){
