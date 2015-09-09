@@ -38,6 +38,7 @@
     "debug-levels": "^0.2.0",
     "dustjs-helpers": "^1.7.1",
     "dustjs-linkedin": "^2.7.1",
+    "engine.io": "git://github.com/gsklee/engine.io.git",
     "extend": "^2.0.1",
     "glob": "^5.0.6",
     "http2": "^3.2.0",
