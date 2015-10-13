@@ -41,6 +41,7 @@
     "dustjs-linkedin": "^2.7.1",
     "engine.io": "git://github.com/gsklee/engine.io.git",
     "engine.io-client": "git://github.com/gsklee/engine.io-client.git",
+    "eventemitter2": "^0.4.14",
     "extend": "^2.0.1",
     "glob": "^5.0.6",
     "http2": "^3.2.0",

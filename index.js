@@ -140,7 +140,6 @@ class Puree extends Emitter {
         this.ns = "/";
 	}
 	get app() { return this._app; }
-	get sio() { return this._sio; }
 	get config() { return this._config; }
 	set config(config) { return this._config = config; }
 	set namespace(ns) { this._ns = ns; this.emit('namespace', ns);}
