@@ -1,5 +1,5 @@
 {
-  "name": "@eskygo/koala-puree",
+  "name": "@shekhei/koala-puree",
   "version": "0.1.44",
   "description": "a koa(koala) project meshup",
   "main": "index.js",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://www.github.com/eskygo/koala-puree"
+    "url": "https://www.github.com/csballz/koala-puree"
   },
   "keywords": [
     "koala",
@@ -23,8 +23,8 @@
   "author": "Wong Shek Hei Felix",
   "license": "ISC",
   "dependencies": {
-    "@eskygo/koala": "^0.9.4",
-    "@eskygo/orientose": "^0.3.18",
+    "@shekhei/koala": "^0.9.4",
+    "@shekhei/orientose": "^0.3.18",
     "async": "^0.9.0",
     "bluebird": "^2.9.25",
     "bunyan": "^1.4.0",
@@ -33,9 +33,10 @@
     "co-body": "^2.0.0",
     "co-dust": "0.0.2",
     "commander": "2",
-    "cookies": "git://github.com/eskygo/cookies.git",
+    "cookies": "git://github.com/shekhei/cookies.git",
     "debug": "^2.2.0",
     "debug-levels": "^0.2.0",
+    "delegates": "^0.1.0",
     "dustjs-helpers": "^1.7.1",
     "dustjs-linkedin": "^2.7.1",
     "engine.io": "git://github.com/gsklee/engine.io.git",
@@ -53,9 +54,9 @@
     "koa-socket": "^0.4.0",
     "koa-spdy": "^0.1.0",
     "koa-trie-router": "^1.0.10",
-    "koa-views": "git://github.com/eskygo/koa-views.git",
+    "koa-views": "git://github.com/shekhei/koa-views.git",
     "lodash": "^3.8.0",
-    "mdns": "git://github.com/eskygo/node_mdns.git",
+    "mdns": "git://github.com/shekhei/node_mdns.git",
     "methods": "^1.1.1",
     "mkdirp": "^0.5.1",
     "mock-req": "^0.2.0",

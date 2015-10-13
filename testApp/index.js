@@ -1,5 +1,5 @@
 "use strict"
-var KoalaPuree = require('koala-puree');
+var KoalaPuree = require('../index.js');
 
 // var mod = module;
 

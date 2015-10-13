@@ -9,9 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "sails-fdbsql": "^0.10.0",
-    "waterline": "^0.10.16",
-    "koala-puree": "*"
+    "@eskygo/koala-puree": "*"
   },
   "services": {
     "koala-puree-test": "0.0.1"

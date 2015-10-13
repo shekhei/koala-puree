@@ -26,7 +26,7 @@ class Puree extends Emitter {
 		process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
 		this._config = extend({}, Puree.DEFAULTCONFIG, readYaml.sync(require('path').resolve(this._basePath,config))[process.env.NODE_ENV.toLowerCase()]);
-		var app = this._app = require('@eskygo/koala')({
+		var app = this._app = require('@shekhei/koala')({
 			fileServer: {
 				root: "./public"
 			},
