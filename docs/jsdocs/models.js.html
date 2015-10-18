@@ -39,7 +39,7 @@ var puree = require('../index'),
     glob = require("glob"),
     logger = require('debug'),
     debug = logger('koala-puree:models'),
-    Orientose = require('@eskygo/orientose'),
+    Orientose = require('@shekhei/orientose'),
     Promise = require('bluebird'),
     Schema = Orientose.Schema;
 
@@ -140,34 +140,93 @@ class ModelBuilder {
                     var rel = self._relations[name];
                     if ( 'link' in rel || 'in' in rel || 'out' in rel || 'both' in rel ) {
                         var cond = rel.link || rel.in || rel.out || rel.both;
+                        var reverseCond;
                         if ( "link" !== rel.linkType ) {
+                            if ( rel.in ) {
+                                reverseCond = 'out';
+                            } else if ( rel.out ) {
+                                reverseCond = 'in';
+                            }
+                            reverseCond = reverseCond+"('"+cond+"')"
                             cond = rel.linkType+"('"+cond+"')"
                         }
                         var one = rel.type === "hasOne" ? true : false;
+                        schema.static("findBy"+name, function _reverseLocate(id){
+                            if ( id._id ) {
+                                id = id._id;
+                            }
+                            var self = this;
+                            var query = this._orientose()
+                                        ._db
+                                        .select()
+                                        .from(`( select expand(${reverseCond}) from ${id} )`)
+                                        .where({"@class": `${self._model.name}`})
+                            if ( one ) {
+                                query.limit(1);
+                            }
+                            var newQuery = function(){};
+                            newQuery.query = query;
+                            require('delegates')(newQuery, 'query')
+                                .method('limit')
+                                .method('where')
+                                .method('sort')
+                                .method('order')
+                                .method('let')
+                            newQuery.then = function(fn){
+                              var p = query.exec()
+                                    .then(function(m){
+                                        debug(m);
+                                        var model = self._model;
+                                        if ( one ) {
+                                            return Promise.resolve(model._createDocument(m[0]));
+                                        }
+                                        return Promise.resolve(m.map(function(m){
+                                            return model._createDocument(m);
+                                        }));
+                                    })
+                                if ( fn ) {
+                                    p = p.then(fn);
+                                }
+                                return p
+                            }
+                            return newQuery;
+                        });
                         schema.method(methodName, function _getRelation(){
                             var self = this;
-                            var qs = [
-                                "select from (",
-                                `select expand(${cond}) from ${this._id}`,
-                                ")",
-                                `where @class='${rel.clz}'`
-                            ];
-                            if ( one ) {
-                                qs.push('limit 1');
-                            }
                             var query = this._orientose()
-                                            ._db
-                                            .query(qs.join(" "));
-                            return query.then(function(m) {
-                                debug(m);
-                                var model = self._omodel(rel.clz)._model;
-                                if ( one ) {
-                                    return Promise.resolve(model._createDocument(m[0]));
+                                        ._db
+                                        .select()
+                                        .from(`( select expand(${cond}) from ${this._id} )`)
+                                        .where({"@class": `${rel.clz}`})
+                            if ( one ) {
+                                query.limit(1);
+                            }
+                            var newQuery = function(){};
+                            newQuery.query = query;
+                            require('delegates')(newQuery, 'query')
+                                .method('limit')
+                                .method('where')
+                                .method('sort')
+                                .method('order')
+                                .method('let')
+                            newQuery.then = function(fn){
+                              var p = query.exec()
+                                    .then(function(m){
+                                        debug(m);
+                                        var model = self._omodel(rel.clz)._model;
+                                        if ( one ) {
+                                            return model._createDocument(m[0]);
+                                        }
+                                        return Promise.resolve(m.map(function(m){
+                                            return model._createDocument(m);
+                                        }));
+                                    })
+                                if ( fn ) {
+                                    p = p.then(fn);
                                 }
-                                return Promise.resolve(m.map(function(m){
-                                    return model._createDocument(m);
-                                }));
-                            });
+                                return p;
+                            }
+                            return newQuery;
                         })
 
                     } else {
@@ -578,7 +637,7 @@ module.exports = function OrientoseModelPlugin() {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Tue Sep 15 2015 14:34:06 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Wed Oct 14 2015 15:54:44 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
