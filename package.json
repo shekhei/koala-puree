@@ -36,6 +36,7 @@
     "debug": "^2.2.0",
     "debug-levels": "^0.2.0",
     "delegates": "^0.1.0",
+    "dir-config-loader": "0.0.1",
     "dustjs-helpers": "^1.7.1",
     "dustjs-linkedin": "^2.7.1",
     "engine.io": "git://github.com/gsklee/engine.io.git",

@@ -24,15 +24,14 @@ class Puree extends Emitter {
 		    if (!(this instanceof Puree)) return new Puree(mod, config);
 		    debug(`pwd is ${require("path").resolve(".")}`);
 		    config = config || "./config/server.yml";
-		    process.env.NODE_ENV = process.env.NODE_ENV || "development";
-
+		    this._env = process.env.NODE_ENV = process.env.NODE_ENV || "development";
 		    this._config = extend({}, Puree.DEFAULTCONFIG, readYaml.sync(require("path").resolve(this._basePath,config))[process.env.NODE_ENV.toLowerCase()]);
 		    var app = this._app = require("@shekhei/koala")({
-			    fileServer: {
-				    root: this._basePath+"/public"
+			fileServer: {
+			    root: this._basePath+"/public"
 			},
-			    session: {
-				    domain: this._config.passport.domain
+			session: {
+			    domain: this._config.passport.domain
 			},
 			    security: {
 				    xframe: "same"
