@@ -29,7 +29,7 @@ class Puree extends Emitter {
 		    this._config = extend({}, Puree.DEFAULTCONFIG, readYaml.sync(require("path").resolve(this._basePath,config))[process.env.NODE_ENV.toLowerCase()]);
 		    var app = this._app = require("@shekhei/koala")({
 			    fileServer: {
-				    root: "./public"
+				    root: this._basePath+"/public"
 			},
 			    session: {
 				    domain: this._config.passport.domain

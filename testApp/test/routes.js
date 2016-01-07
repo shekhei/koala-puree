@@ -6,7 +6,7 @@ var chai = require("chai"),
 
 chai.use(chaiHttp);
 
-describe('Application', function(){
+describe('Routes', function(){
 	var puree = new TestApp(), sio, socket;
 	before(function(done) {
 		this.timeout(5000);
@@ -25,69 +25,67 @@ describe('Application', function(){
 				done();
 			})
 		}, function(err){
-			done(err);			
+			done(err);
 		});
 	})
 	after(function(done){
+        this.timeout(5000);
+        sio.disconnect();
 		puree.close().then(function(){
 			done();
 		},function(err){
 			done(err);
 		});
 	})
-	describe('routes', function(){
-		it('should have a get(/test)', function(done){
+    it('should have a get(/test)', function(done){
 
-			chai.request("http://localhost:5000")
-				.get("/test")
-				.end(function(err, res){
-					if ( err ) { return done(err); }
-					expect(res).to.have.status(200);
-					done();
-				});
-		});
-		it('should have a post(/test)', function(done){
-			chai
-				.request("http://localhost:5000")
-				.post("/test")
-				.end(function(err, res){
-					if ( err ) { return done(err); }
-					expect(res).to.have.status(200);
-					done();
-				});
-		});
-		it('should have a get(/test/:name)', function(done){
-			chai.request("http://localhost:5000")
-				.get("/test/felix")
-				.end(function(err, res){
-					if ( err ) { return done(err); }
-					expect(res).to.have.status(200);
-					done();
-				});
-		});
-	})
-	describe('websocket', function(){
-		it('should have a get(/test)', function(done){
-			sio.emit('s', "get", "/test", {},{}, function(status, headers, body){
-				expect(status).eql(200);
-				expect(body).eql('get')
-				done();
-			});
-		});
-		it('should have a post(/test)', function(done){
-			sio.emit('s', "post", "/test", {},{}, function(status, headers, body){
-				expect(status).eql(200);
-				expect(body).eql('post')
-				done();
-			});
-		});
-		it('should have a get(/test/:name)', function(done){
-			sio.emit('s', "get", "/test/felix", {},{}, function(status, headers, body){
-				expect(status).eql(200);
-				expect(body).eql('felix')
-				done();
-			});
-		});
-	})
+        chai.request("http://localhost:5000")
+            .get("/test")
+            .end(function(err, res){
+                if ( err ) { return done(err); }
+                expect(res).to.have.status(200);
+                done();
+            });
+    });
+    it('should have a post(/test)', function(done){
+        chai
+            .request("http://localhost:5000")
+            .post("/test")
+            .end(function(err, res){
+                if ( err ) { return done(err); }
+                expect(res).to.have.status(200);
+                done();
+            });
+    });
+    it('should have a get(/test/:name)', function(done){
+        chai.request("http://localhost:5000")
+            .get("/test/felix")
+            .end(function(err, res){
+                if ( err ) { return done(err); }
+                expect(res).to.have.status(200);
+                done();
+            });
+    });
+    it('websocket: should have a get(/test)', function(done){
+        sio.emit('s', "get", "/test", {},{}, function(status, headers, body){
+            expect(status).eql(200);
+            expect(body).eql('get')
+            done();
+        });
+    });
+    it('websocket: should have a post(/test)', function(done){
+        sio.emit('s', "post", "/test", {},{}, function(status, headers, body){
+            expect(status).eql(200);
+            expect(body).eql('post')
+            done();
+        });
+    });
+    it('websocket: should have a get(/test/:name)', function(done){
+        sio.emit('s', "get", "/test/felix", {},{}, function(status, headers, body){
+            expect(status).eql(200);
+            expect(body).eql('felix')
+            done();
+        });
+    });
 });
 

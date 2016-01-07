@@ -37,6 +37,5 @@ describe('Puree Static From Public folder', function(){
 				expect(res).to.have.status(200);
 				done();
 			});
-		done();
 	});
 });

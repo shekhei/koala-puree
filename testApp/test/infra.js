@@ -15,6 +15,7 @@ chai.use(chaiHttp);
 describe('Puree Infra', function(){
 	var puree = new TestApp(), sio, socket, browser, service;
 	before(function(done) {
+        console.log('starting beforeall infra');
 		this.timeout(50000);
 		puree.start().then(function(app){
 			done();
@@ -25,6 +26,7 @@ describe('Puree Infra', function(){
 	after(function(done){
 		this.timeout(50000);
 		puree.close().then(function(){
+            console.log('teardown completed');
 			done();
 		},function(err){
 			done(err);
