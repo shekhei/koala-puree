@@ -4,6 +4,9 @@ development:
     ad:
 test:
   port: 5000
+  db:
+    username: root
+    password: happy
   mdns:
     ad:
       interface: lo

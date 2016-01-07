@@ -1,6 +1,5 @@
 all: test
 test:
-	@DEBUG=koala-puree* ./node_modules/.bin/mocha --harmony test
-	$(MAKE) -C ./testApp/ all
-
+	@NODE_ENV=test DEBUG=koala-puree* ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --reporter dot test testApp/test
 .PHONY: test
+

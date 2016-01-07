@@ -2,11 +2,7 @@
 var chai = require("chai"),
 	expect = chai.expect,
 	chaiHttp = require("chai-http"),
-	KoalaPuree = require('koala-puree'),
 	TestApp = require('../index'),
-	PureeService = KoalaPuree.Spices,
-	Service = PureeService.Service,
-	Browser = PureeService.Browser,
 	sioClient = require("socket.io-client"),
 	mdns = require('mdns'),
 	pkginfo;
@@ -19,15 +15,15 @@ chai.use(chaiHttp);
 describe('Puree Infra', function(){
 	var puree = new TestApp(), sio, socket, browser, service;
 	before(function(done) {
-		this.timeout(5000);
-		puree.start().then(function(){
+		this.timeout(50000);
+		puree.start().then(function(app){
 			done();
 		}, function(err) {
 			return done(err);
 		});
 	})
 	after(function(done){
-		this.timeout(5000);
+		this.timeout(50000);
 		puree.close().then(function(){
 			done();
 		},function(err){

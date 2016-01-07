@@ -75,11 +75,15 @@
     "watch": "^0.16.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.3.17",
+    "babel-core": "^6.3.26",
+    "babel-istanbul": "^0.5.9",
     "chai": "^2.3.0",
     "chai-http": "^1.0.0",
     "del": "^1.2.0",
     "gulp": "^3.9.0",
     "gulp-run": "^1.6.8",
+    "istanbul": "^0.4.1",
     "jsdoc": "git://github.com/jsdoc3/jsdoc.git",
     "mocha": "^2.2.5"
   }

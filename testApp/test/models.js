@@ -2,7 +2,6 @@
 var chai = require("chai"),
 	expect = chai.expect,
 	chaiHttp = require("chai-http"),
-	KoalaPuree = require('koala-puree'),
 	TestApp = require('../index'),
 	sioClient = require("socket.io-client"),
 	mdns = require('mdns'),
@@ -53,7 +52,7 @@ describe('Puree Models', function(){
 				});
 		}).then(function(){
 			done();
-		});	
+		});
 	})
 	it('Should be able to retrive previous user', function(done){
 		app.models.User
