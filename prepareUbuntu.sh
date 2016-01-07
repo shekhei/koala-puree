@@ -3,7 +3,7 @@
 gcc -v || ln -s $(which gcc-4.8) /usr/bin/gcc
 gcc -v || exit 1
 
-filename="mDNSResponder-576.30.4"
+filename="mDNSResponder-561.1.1"
 
 sudo apt-get install m4 flex
 
