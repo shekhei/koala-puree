@@ -1,18 +1,17 @@
 {
-  "name": "@shekhei/koala-puree",
-  "version": "0.1.49",
+  "name": "koala-puree",
+  "version": "0.0.1",
   "description": "a koa(koala) project meshup",
   "main": "index.js",
   "bin": {
-    "koala-puree": "./bin/koala-puree.js",
-    "koala-puree-start": "./bin/koala-puree-start.js"
+    "koala-puree": "./bin/koala-puree.js"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "make test"
   },
   "repository": {
     "type": "git",
-    "url": "https://www.github.com/csballz/koala-puree"
+    "url": "https://www.github.com/shekhei/koala-puree"
   },
   "keywords": [
     "koala",
