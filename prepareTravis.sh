@@ -5,7 +5,8 @@ gcc -v || exit 1
 
 filename="mDNSResponder-561.1.1"
 orientdb="orientdb-community-2.1.9"
-wget "http://orientdb.com/download.php?email=unknown@unknown.com&file=${orientdb}.tar.gz&os=linux"
+wget "http://orientdb.com/download.php?email=unknown@unknown.com&file=${orientdb}.tar.gz&os=linux" -O ${orientdb}.tar.gz
+
 
 tar xzf "${orientdb}.tar.gz"
 cd ${orientdb}
