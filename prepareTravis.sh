@@ -10,7 +10,7 @@ wget "http://orientdb.com/download.php?email=unknown@unknown.com&file=${orientdb
 
 tar xzf "${orientdb}.tar.gz"
 cd ${orientdb}
-sed -i"" -e 's/\<users>/\<users>\<user resources="*" password="happy" name="root"\/>/g' config/orientdb-server-config.xml
+sed -i"" -e 's/<users>/<users><user resources="*" password="happy" name="root"\/>/g' config/orientdb-server-config.xml
 cat config/orientdb-server-config.xml
 ./bin/server.sh &
 sleep 2
