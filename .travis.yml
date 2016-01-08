@@ -3,10 +3,10 @@ sudo: required
 before_install:
   - source <(curl -SLs https://raw.githubusercontent.com/shekhei/koala-puree/${TRAVIS_BRANCH}/prepareTravis.sh)
 install:
-  - npm install -g codecov
+  - npm install codecov.io
 script:
   - npm test
-  - codecov
+  - cat ./coverage/coverage.json | ./node_modules/codecov.io/bin/codecov.io.js
 node_js:
   - "5"
   - "4"
