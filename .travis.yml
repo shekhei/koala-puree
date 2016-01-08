@@ -11,7 +11,9 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
+      - salehi/bison2
     packages:
+      - bison=2:2.7.1.dfsg-1
       - g++-4.8
       - gcc-4.8
       - m4

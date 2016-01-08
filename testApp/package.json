@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@shekhei/koala-puree": "*"
+    "koala-puree": "*"
   },
   "services": {
     "koala-puree-test": "0.0.1"
