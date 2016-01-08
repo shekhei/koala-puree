@@ -7,7 +7,7 @@ This is a framework that wrapped around [[koa.js][http://koajs.com]] and [[koala
 ## Usage
 
 ```
-npm install \@eskygo/koala-puree --save
+npm install koala-puree --save
 ```
 
 ```
