@@ -1,4 +1,5 @@
 language: node_js
+sudo: required
 before_install:
   - source <(curl -SLs https://raw.githubusercontent.com/shekhei/koala-puree/${TRAVIS_BRANCH}/prepareUbuntu.sh)
 node_js:

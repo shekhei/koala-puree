@@ -8,7 +8,7 @@ filename="mDNSResponder-561.1.1"
 wget "http://ftp.gnu.org/gnu/bison/bison-2.7.tar.gz"
 tar xzf "bison-2.7.tar.gz"
 cd bison-2.7
-./configure && make && make install
+./configure && make && sudo make install
 
 cd ../
 
@@ -18,6 +18,6 @@ tar xzf ${filename}.tar.gz
 cd ${filename}
 cd mDNSPosix
 make os=linux
-make os=linux install
+sudo make os=linux install
 
 cd ../../
