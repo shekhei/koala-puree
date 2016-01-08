@@ -11,6 +11,7 @@ tar xzf "${orientdb}.tar.gz"
 cd ${orientdb}
 sed -i "" 's/\<users\>/\<users>\<user resources="*" password="happy" name="root"\/>/g' config/orientdb-server-config.xml
 ./bin/server.sh &
+curl -X POST http://root:happy@localhost:2480/database/koala-puree-test-test/plocal
 cd ..
 
 wget "http://ftp.gnu.org/gnu/bison/bison-2.7.tar.gz"
