@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/csballz/koala-puree.svg?branch=development)](https://travis-ci.org/csballz/koala-puree)
+
 # KOALA-PUREE
 
 This is a framework that wrapped around [[koa.js][http://koajs.com]] and [[koala][https://github.com/koajs/koala]].
