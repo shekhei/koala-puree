@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/csballz/koala-puree.svg?branch=development)](https://travis-ci.org/csballz/koala-puree)
+[![Code Climate](https://codeclimate.com/github/csballz/koala-puree/badges/gpa.svg)](https://codeclimate.com/github/csballz/koala-puree)
 
 # KOALA-PUREE
 
