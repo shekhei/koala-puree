@@ -5,12 +5,10 @@ gcc -v || exit 1
 
 filename="mDNSResponder-561.1.1"
 
-sudo apt-get install m4 flex
-
 wget "http://ftp.gnu.org/gnu/bison/bison-2.7.tar.gz"
 tar xzf "bison-2.7.tar.gz"
 cd bison-2.7
-./configure && make && sudo make install
+./configure && make && make install
 
 cd ../
 
@@ -20,6 +18,6 @@ tar xzf ${filename}.tar.gz
 cd ${filename}
 cd mDNSPosix
 make os=linux
-sudo make os=linux install
+make os=linux install
 
 cd ../../
