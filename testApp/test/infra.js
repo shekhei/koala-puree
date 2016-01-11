@@ -4,11 +4,7 @@ var chai = require("chai"),
 	chaiHttp = require("chai-http"),
 	TestApp = require('../index'),
 	sioClient = require("socket.io-client"),
-	mdns = require('mdns'),
-	pkginfo;
-
-require('pkginfo')(module);
-pkginfo = module.exports;
+	mdns = require('mdns');
 
 chai.use(chaiHttp);
 

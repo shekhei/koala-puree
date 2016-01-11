@@ -15,7 +15,7 @@ class Puree extends Emitter {
       super();
       var closestPath = closest.sync(require("path").dirname(mod.filename));
       this._basePath = require("path").dirname(closestPath);
-      var pkginfo = require("pkginfo")(mod);
+      var pkginfo = require("@shekhei/pkginfo")(mod);
       debug("Configurations read", pkginfo);
       if (!(this instanceof Puree)) return new Puree(mod, config);
       debug(`pwd is ${require("path").resolve(".")}`);

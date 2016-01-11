@@ -51,7 +51,7 @@
     "mock-res": "^0.3.0",
     "moment": "^2.10.3",
     "node-forge": "^0.6.26",
-    "pkginfo": "git://github.com/shekhei/node-pkginfo.git",
+    "@shekhei/pkginfo": "^0.3.0",
     "pmx": "^0.5.8",
     "querystring": "^0.2.0",
     "read-yaml": "^1.0.0",

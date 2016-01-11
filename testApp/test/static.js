@@ -4,12 +4,9 @@ var chai = require("chai"),
 	chaiHttp = require("chai-http"),
 	TestApp = require('../index'),
 	sioClient = require("socket.io-client"),
-	mdns = require('mdns'),
-	pkginfo;
+	mdns = require('mdns');
 
 chai.use(chaiHttp);
-require('pkginfo')(module);
-pkginfo = module.exports;
 
 describe('Puree Static From Public folder', function(){
 	var puree = new TestApp(), app, sio, socket, browser;
