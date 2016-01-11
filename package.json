@@ -7,6 +7,7 @@
     "koala-puree": "./bin/koala-puree.js"
   },
   "scripts": {
+    "pretest": "cd testApp; npm link ../; cd ../",
     "test": "make test"
   },
   "repository": {

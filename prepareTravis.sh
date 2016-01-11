@@ -33,7 +33,3 @@ make os=linux
 sudo make os=linux install
 
 cd ../../
-
-cd testApp
-npm link ../
-cd ../
