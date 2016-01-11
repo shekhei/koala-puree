@@ -87,5 +87,25 @@ describe('Routes', function(){
             done();
         });
     });
+
+    it('promises: should have a get(/promises/test)', function(done){
+        chai.request("http://localhost:5000")
+            .get("/promises/test")
+            .end((err, res) => {
+                if ( err ) { return done(err); }
+                expect(res).to.have.status(200);
+                expect(res.text).to.eql("get");
+                done();
+            })
+    })
+
+    it('promises/websocket: should have a get(/promises/test)', function(done){
+        sio.emit('s', "get", "/promises/test", {},{}, function(status, headers, body){
+            expect(status).eql(200);
+            expect(body).eql('get')
+            done();
+        });
+    });
+
 });
 

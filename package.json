@@ -23,7 +23,7 @@
   "author": "Wong Shek Hei Felix",
   "license": "ISC",
   "dependencies": {
-    "@shekhei/koala": "^0.10.0",
+    "@shekhei/koala": "^0.10.1",
     "@shekhei/orientose": "^0.3.19",
     "@shekhei/pkginfo": "^0.3.0",
     "bluebird": "^3.1.1",
@@ -65,7 +65,6 @@
     "babel-cli": "^6.3.17",
     "babel-core": "^6.3.26",
     "babel-istanbul": "^0.5.9",
-    "benchmark": "^2.0.0",
     "chai": "^3.4.1",
     "chai-http": "^1.0.0",
     "del": "^2.2.0",
@@ -73,6 +72,7 @@
     "gulp-run": "^1.6.8",
     "istanbul": "^0.4.1",
     "jsdoc": "git://github.com/jsdoc3/jsdoc.git",
+    "matcha": "^0.6.1",
     "mocha": "^2.2.5"
   }
 }
