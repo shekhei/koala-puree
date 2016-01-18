@@ -8,8 +8,9 @@ var compose = require("koa-compose");
 var closest = require("closest-package");
 var Cookies = require("cookies");
 var http = require("http");
-var http2 = require("http2");
+var http2 = require("spdy");
 var fs = require("fs");
+var bunyan = require('bunyan');
 class Puree extends Emitter {
   constructor(mod, config) {
       super();
@@ -39,16 +40,14 @@ class Puree extends Emitter {
           options = options || {};
           var fn = app.callback();
           var server;
-          if ( options.ssl ) {
-              require("./lib/passport-req")(http2.IncomingRequest.prototype);
+          if ( !options.server.plain ) {
             //options.ssl.log = require('bunyan')({name: "http2"})
-              server = http2.createServer(options.ssl);
-              server.address = server._server.address.bind(server._server);
+              server = http2.createServer(options.server);
               var oldfn = fn;
-              fn = function(req, res){
+              fn = function onIncomingRequest(req, res){
                   req.connection = req.connection || req.socket;
                   res.socket = res.socket || res.stream;
-                  res.stream.on("end", function(){
+                  res.socket.on("end", function(){
                       debug("at least this is ended?!?!?!?!");
                   });
                   res.connection = res.connection || res.socket;
@@ -60,7 +59,7 @@ class Puree extends Emitter {
                   oldcb && oldcb();
               };
           } else {
-              server = http.createServer();
+              server = http2.createServer(options.server);
           }
 
           server.on("request", fn);
@@ -168,12 +167,19 @@ class Puree extends Emitter {
               var server;
               yield* next;
               debug("going into send step of starting server");
-              var options = {};
+              var options = {server: {
+                  spdy: {
+                      protocols: ['h2', 'http/1.1'],
+                      plain: true,
+                      connection: {
+                          windowSize: 1024*1024
+                      }
+                  }
+              }};
               if ( self._config.ssl ) {
-                  options.ssl = {
-                      key: fs.readFileSync(self._config.ssl.key),
-                      cert: fs.readFileSync(self._config.ssl.cert)
-                  };
+                  options.server.key = fs.readFileSync(self._config.ssl.key)
+                  options.server.cert = fs.readFileSync(self._config.ssl.cert)
+                  options.server.spdy.plain = false;
               }
               if ( forConsole ) {
                   debug("starting with sock");
