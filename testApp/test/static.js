@@ -20,6 +20,7 @@ describe('Puree Static From Public folder', function(){
 		});
 	})
 	after(function(done){
+        this.timeout(5000);
 		puree.close().then(function(){
 			done();
 		},function(err){
@@ -27,6 +28,7 @@ describe('Puree Static From Public folder', function(){
 		});
 	})
 	it("should get a test.js", function(done){
+        this.timeout(5000);
 		chai.request("http://localhost:5000")
 			.get("/static/test.js")
 			.end(function(err, res){

@@ -1,0 +1,14 @@
+<!doctype>
+<html>
+    <head>
+    </head>
+    <body>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var sio = io();
+            sio.emit('s', 'post', '/test', {abc:"def"}, {"accepts": "application/json"}, function() {
+                console.log(arguments);
+            })
+        </script>
+    </body>
+</html>

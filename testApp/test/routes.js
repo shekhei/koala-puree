@@ -51,9 +51,12 @@ describe('Routes', function(){
         chai
             .request("http://localhost:5000")
             .post("/test")
+            .field("prepend", "abc")
             .end(function(err, res){
+                console.log(err, res);
                 if ( err ) { return done(err); }
                 expect(res).to.have.status(200);
+                expect(res.text).to.eql('postabc')
                 done();
             });
     });
@@ -74,9 +77,9 @@ describe('Routes', function(){
         });
     });
     it('websocket: should have a post(/test)', function(done){
-        sio.emit('s', "post", "/test", {},{}, function(status, headers, body){
+        sio.emit('s', "post", "/test", {"prepend":"abc"},{}, function(status, headers, body){
             expect(status).eql(200);
-            expect(body).eql('post')
+            expect(body).eql('postabc')
             done();
         });
     });

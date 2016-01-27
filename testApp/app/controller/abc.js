@@ -5,7 +5,8 @@ exports = module.exports = function(router){
 		this.body = "get";
 	});
 	router.post('/test', function*(next){
-		this.body="post";
+        var params = yield this.req.body();
+		this.body="post"+params.prepend;
 	});
 	router.get('/test/:name', function*(next){
 		this.body=this.params.name;

@@ -67,6 +67,7 @@
     "babel-istanbul": "^0.5.9",
     "chai": "^3.4.1",
     "chai-http": "^1.0.0",
+    "co-multipart": "^2.0.0",
     "del": "^2.2.0",
     "gulp": "^3.9.0",
     "gulp-run": "^1.6.8",
