@@ -191,7 +191,7 @@ class Puree extends Emitter {
               }
               var completed = false;
               debug("waiting for listen event");
-              server.on("listening", function(){
+              server.once("listening", function(){
                   debug("Receiving listening event!");
                   if ( completed ) {
                       resolve(self);
