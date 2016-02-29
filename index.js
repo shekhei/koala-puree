@@ -37,6 +37,7 @@ class Puree extends Emitter {
       app.listen = function listen(port, cb, options) {
 
           if (typeof port === "function") options = cb, cb = port, port = null;
+          if ( options === undefined && typeof cb !== "function" ) options = cb, cb = undefined;
           options = options || {};
           var fn = app.callback();
           var server;
@@ -184,7 +185,7 @@ class Puree extends Emitter {
               if ( forConsole ) {
                   debug("starting with sock");
 
-                  server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock");
+                  server = self._server = self._app.listen("/tmp/"+Math.random()+Date.now()+".sock", options);
               } else {
                   debug("Trying to listen to", self._config.port, self._config.host);
                   server = self._server = self._app.listen(self._config.port, self._config.host, options);
