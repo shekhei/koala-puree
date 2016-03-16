@@ -11,6 +11,7 @@ var http = require("http");
 var http2 = require("spdy");
 var fs = require("fs");
 var bunyan = require('bunyan');
+var send = require('koa-send');
 class Puree extends Emitter {
   constructor(mod, config) {
       super();
@@ -41,27 +42,24 @@ class Puree extends Emitter {
           options = options || {};
           var fn = app.callback();
           var server;
-          if ( !options.server.plain ) {
-            //options.ssl.log = require('bunyan')({name: "http2"})
-              server = http2.createServer(options.server);
-              var oldfn = fn;
-              fn = function onIncomingRequest(req, res){
-                  req.connection = req.connection || req.socket;
-                  res.socket = res.socket || res.stream;
-                  res.socket.on("end", function(){
-                      debug("at least this is ended?!?!?!?!");
-                  });
-                  res.connection = res.connection || res.socket;
-                  oldfn(req, res);
-              };
-              var oldcb = cb;
-              cb = function() {
-                  server.emit("listening");
-                  oldcb && oldcb();
-              };
-          } else {
-              server = http2.createServer(options.server);
-          }
+          var oldfn = fn;
+          server = http2.createServer(options.server);
+          fn = function onIncomingRequest(req, res){
+              req.socket = req.connection;
+              //req.connection = req.connection || req.socket;
+              res.socket = res.socket || res.stream;
+              res.socket.on("end", function(){
+                  debug("at least this is ended?!?!?!?!");
+              });
+              res.templateContext = {};
+              res.connection = res.connection || res.socket;
+              oldfn(req, res);
+          };
+          var oldcb = cb;
+          cb = function() {
+              server.emit("listening");
+              oldcb && oldcb();
+          };
 
           server.on("request", fn);
           server.on("checkContinue", function (req, res) {
@@ -85,8 +83,9 @@ class Puree extends Emitter {
       });
       app.use(function*(next){
           debug("static route");
+          var path = "/static";
           if ( this.request.path ) {
-              var path = "/static";
+
               if ( self.ns && self.ns !== "/" ) {
                   path = self.ns+path;
               }
@@ -96,11 +95,23 @@ class Puree extends Emitter {
                   debug("serving file");
           // have to remove the starting slash too
           // and remove the query string
-
-                  yield this.fileServer.send(this.request.path.substr(path.length+1));
+          console.log(self._basePath+"/public", this.request.path.substr(path.length+1));
+                  yield send(this, this.request.path.substr(path.length+1), { root: self._basePath+"/public"});
                   return;
               }
           }
+          this.res.pushStatic = ((reqPath) => {
+            if (reqPath.startsWith(path)) {
+              // first implement a naive implementation
+
+              var stream = this.res.push(reqPath,{
+                request:{accepts: "*/*", "accept-encoding": "gzip"},
+                response:{vary: "accept-encoding"}
+              })
+              fs.createReadStream(self._basePath+"/public"+reqPath.substr(path.length)+".gz").pipe(stream);
+
+            }
+          })
           debug("path doesnt match");
           yield* next;
       });
