@@ -62,7 +62,7 @@
     "spdy": "^3.1.0",
     "co-multipart": "^2.0.0",
     "dustjs-linkedin": "^2.7.2",
-    "dustjs-helper": "^1.7.3"
+    "dustjs-helpers": "^1.7.3"
   },
   "devDependencies": {
     "babel-cli": "^6.3.17",
