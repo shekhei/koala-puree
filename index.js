@@ -10,7 +10,6 @@ var Cookies = require("cookies");
 var http = require("http");
 var http2 = require("spdy");
 var fs = require("fs");
-var bunyan = require('bunyan');
 var send = require('koa-send');
 class Puree extends Emitter {
   constructor(mod, config) {
@@ -95,7 +94,6 @@ class Puree extends Emitter {
                   debug("serving file");
           // have to remove the starting slash too
           // and remove the query string
-          console.log(self._basePath+"/public", this.request.path.substr(path.length+1));
                   yield send(this, this.request.path.substr(path.length+1), { root: self._basePath+"/public"});
                   return;
               }
