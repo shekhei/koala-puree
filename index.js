@@ -1,4 +1,5 @@
 "use strict";
+require("any-promise/register")("bluebird");
 var readYaml = require("read-yaml"), extend = require("extend");
 
 var debug = require("debug")("koala-puree");
@@ -9,8 +10,9 @@ var closest = require("closest-package");
 var Cookies = require("cookies");
 var http = require("http");
 var http2 = require("spdy");
-var fs = require("fs");
+var fs = require("mz/fs");
 var send = require('koa-send');
+
 class Puree extends Emitter {
   constructor(mod, config) {
       super();
@@ -98,17 +100,35 @@ class Puree extends Emitter {
                   return;
               }
           }
-          this.res.pushStatic = ((reqPath) => {
+          this.res.pushStatic = ((reqPath, originalPath) => {
+            var rs = this.res;
             if (reqPath.startsWith(path)) {
               // first implement a naive implementation
-
-              var stream = this.res.push(reqPath,{
+              var stream = this.res.push(originalPath,{
                 request:{accepts: "*/*", "accept-encoding": "gzip"},
-                response:{vary: "accept-encoding"}
+                response:{
+                  vary: "accept-encoding"
+                  // "content-encoding": "gzip"
+                }
               })
-              fs.createReadStream(self._basePath+"/public"+reqPath.substr(path.length)+".gz").pipe(stream);
-
+              var localPath = self._basePath+"/public"+reqPath.substr(path.length);
+              return fs.exists(localPath+".gz").then((exists)=>{
+                if ( exists ) {
+                  stream.sendHeaders({"content-encoding":"gzip"});
+                  // stream.headers["content-encoding"] = "gzip";
+                  fs.createReadStream(localPath+".gz").pipe(stream);
+                  return true;
+                }
+                return fs.exists(localPath);
+              }).then((exists)=>{
+                if ( exists ) {
+                  fs.createReadStream(localPath).pipe(stream);
+                  return true;
+                }
+                stream.headers[":status"] = 404;
+              })
             }
+            return Promise.resolve(true)
           })
           debug("path doesnt match");
           yield* next;
