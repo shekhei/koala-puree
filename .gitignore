@@ -2,3 +2,5 @@ node_modules
 *.log
 **/*.log
 /coverage
+.tags
+.tags1

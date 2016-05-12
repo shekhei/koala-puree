@@ -11,4 +11,7 @@ exports = module.exports = function(router){
 	router.get('/test/:name', function*(next){
 		this.body=this.params.name;
 	});
+	router.get('/hello', function*(next){
+		yield this.render('test.dust');
+	});
 }

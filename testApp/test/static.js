@@ -37,4 +37,14 @@ describe('Puree Static From Public folder', function(){
 				done();
 			});
 	});
+	it("should get a test.dust", function(done){
+        this.timeout(5000);
+		chai.request("http://localhost:5000")
+			.get("/hello")
+			.end(function(err, res){
+				if ( err ) { return done(err); }
+				expect(res).to.have.status(200);
+				done();
+			});
+	});
 });
