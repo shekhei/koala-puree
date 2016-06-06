@@ -49,9 +49,6 @@ class Puree extends Emitter {
               req.socket = req.connection;
               //req.connection = req.connection || req.socket;
               res.socket = res.socket || res.stream;
-              res.socket.on("end", function(){
-                  debug("at least this is ended?!?!?!?!");
-              });
               res.templateContext = {};
               res.connection = res.connection || res.socket;
               oldfn(req, res);
